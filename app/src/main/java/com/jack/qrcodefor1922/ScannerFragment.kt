@@ -62,11 +62,11 @@ class ScannerFragment : Fragment() {
         if (tmpText.contains(prefix) && arr.size > 2) {
             val num = arr[1]
             var mes = arr[2]
-            if (TextUtils.equals(num, "1922")) {
-                val manager = SmsManager.getDefault()
-                manager.sendTextMessage(num.toString(), null, mes, null, null)
-                mes = ""
-            }
+//            if (TextUtils.equals(num, "1922")) {
+//                val manager = SmsManager.getDefault()
+//                manager.sendTextMessage(num.toString(), null, mes, null, null)
+//                mes = ""
+//            }
             val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                 type = "text/plain"
                 data = Uri.parse("$prefix$num" )
