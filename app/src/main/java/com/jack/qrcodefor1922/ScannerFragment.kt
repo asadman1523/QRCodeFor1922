@@ -1,6 +1,5 @@
 package com.jack.qrcodefor1922
 
-import android.R.attr.phoneNumber
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -85,10 +84,5 @@ class ScannerFragment : Fragment() {
         super.onPause()
         barcodeScannerView.pause()
         lastText = ""
-    }
-
-    companion object {
-        val REQUEST_CODE = 20210523
-        val ACTION_SEND_SUCCESS = "action_send_success"
     }
 }
