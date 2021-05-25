@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
+import android.telephony.SmsManager
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,8 +60,13 @@ class ScannerFragment : Fragment() {
         val tmpText = it.text.toLowerCase()
         val arr = tmpText.split(":")
         if (tmpText.contains(prefix) && arr.size > 2) {
-            val num = arr[1].toIntOrNull()
-            val mes = arr[2].toString()
+            val num = arr[1]
+            var mes = arr[2]
+            if (TextUtils.equals(num, "1922")) {
+                val manager = SmsManager.getDefault()
+                manager.sendTextMessage(num.toString(), null, mes, null, null)
+                mes = ""
+            }
             val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                 type = "text/plain"
                 data = Uri.parse("$prefix$num" )
