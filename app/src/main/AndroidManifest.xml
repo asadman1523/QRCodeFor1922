@@ -4,7 +4,6 @@
     package="com.jack.qrcodefor1922">
 
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
-<!--    <uses-permission android:name="android.permission.SEND_SMS"/>-->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
