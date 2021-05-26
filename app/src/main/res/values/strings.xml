@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">1922 Scanner</string>
+    <string name="app_name">1922QRCodeScanner</string>
     <string name="copy_already">"Copy text already.\n%s"</string>
     <string name="claim_title">"Disclaimer"</string>
     <string name="claim_mes">"The developer is not responsible for any loss caused by using this App. \nAgree please click agree."</string>

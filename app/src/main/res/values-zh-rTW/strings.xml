@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">實聯制掃描器</string>
+    <string name="app_name">實聯制1922掃描器</string>
     <string name="copy_already">"已複製文字\n%s"</string>
     <string name="claim_title">"免責聲明"</string>
     <string name="claim_mes">"使用此App造成任何損失，開發者概不負責。\n同意請點同意。"</string>
