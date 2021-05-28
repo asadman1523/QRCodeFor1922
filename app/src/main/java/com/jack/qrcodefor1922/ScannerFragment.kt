@@ -78,7 +78,7 @@ class ScannerFragment : Fragment() {
                 putExtra("sms_body", mes)
             }
             startActivity(sendIntent)
-
+            activity?.finish()
 
         } else {
             val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
