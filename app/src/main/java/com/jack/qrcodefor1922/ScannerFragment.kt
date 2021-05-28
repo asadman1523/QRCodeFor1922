@@ -5,9 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
+import android.os.*
 import android.telephony.SmsManager
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -53,6 +51,13 @@ class ScannerFragment : Fragment() {
             // Prevent duplicate scans
             return@BarcodeCallback
         }
+        val VIBRATE_PATTERN = longArrayOf(500, 500)
+        val v = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            v.vibrate(VIBRATE_PATTERN, 0)
+        }
         handler.postDelayed(Runnable {
             lastText = ""
         }, 3000)
@@ -69,10 +74,11 @@ class ScannerFragment : Fragment() {
 //            }
             val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                 type = "text/plain"
-                data = Uri.parse("$prefix$num" )
+                data = Uri.parse("$prefix$num")
                 putExtra("sms_body", mes)
             }
             startActivity(sendIntent)
+
 
         } else {
             val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
