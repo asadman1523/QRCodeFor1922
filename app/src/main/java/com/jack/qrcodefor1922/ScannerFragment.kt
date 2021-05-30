@@ -56,7 +56,7 @@ class ScannerFragment : Fragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
-            v.vibrate(VIBRATE_PATTERN, 0)
+            v.vibrate(VIBRATE_PATTERN, -1)
         }
         handler.postDelayed(Runnable {
             lastText = ""
@@ -97,5 +97,7 @@ class ScannerFragment : Fragment() {
         super.onPause()
         barcodeScannerView.pause()
         lastText = ""
+        val v = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        v.cancel()
     }
 }
