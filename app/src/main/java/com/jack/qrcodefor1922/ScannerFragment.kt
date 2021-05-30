@@ -97,5 +97,7 @@ class ScannerFragment : Fragment() {
         super.onPause()
         barcodeScannerView.pause()
         lastText = ""
+        val v = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        v.cancel()
     }
 }
