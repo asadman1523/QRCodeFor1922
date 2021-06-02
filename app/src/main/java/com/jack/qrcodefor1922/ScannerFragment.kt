@@ -61,9 +61,8 @@ class ScannerFragment : Fragment() {
     }
 
     private fun updateOptions() {
-        mCloseAppCheckBox.isChecked = mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, true)
+        mCloseAppCheckBox.isChecked = mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)
         mCloseAppCheckBox.setOnCheckedChangeListener { box, closeApp ->
-            Log.v("QQAQ", "${box.isChecked}")
             mCloseApp = closeApp
         }
     }
@@ -118,7 +117,6 @@ class ScannerFragment : Fragment() {
         // To prevent vibrate infinite on some device
         val v = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         v.cancel()
-        Log.v("QQAQ", "final ${mCloseApp}")
         mPref.edit().putBoolean(PREF_CLOSE_APP_AFTER_SCAN, mCloseApp).apply()
     }
 }
