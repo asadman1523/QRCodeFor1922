@@ -15,13 +15,16 @@ import androidx.fragment.app.commit
 
 class MainActivity : AppCompatActivity() {
 
-    private val AGREEMENT = "agreement"
+    companion object {
+        private const val AGREEMENT = "agreement"
+        const val PREFKEY = "1922qrcode"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         requestPermission()
-        val pref = getSharedPreferences("1922qrcode", MODE_PRIVATE)
+        val pref = getSharedPreferences(PREFKEY, MODE_PRIVATE)
         val agree = pref.getBoolean(AGREEMENT, false)
         if (!agree) {
             val builder = AlertDialog.Builder(this)
@@ -55,20 +58,6 @@ class MainActivity : AppCompatActivity() {
                         add<ScannerFragment>(R.id.fragment_container_view)
                     }
                 }
-
-            }.launch(permissions)
-        } else {
-            val permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.SEND_SMS,
-            Manifest.permission.READ_PHONE_STATE)
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result: MutableMap<String, Boolean> ->
-                // 請求結果，返回一個map ，其中 key 為權限名稱，value 為是否權限是否賦予
-                if (result[Manifest.permission.CAMERA] == true && result[Manifest.permission.SEND_SMS] == true) {
-                    supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        add<ScannerFragment>(R.id.fragment_container_view)
-                    }
-                }
-
             }.launch(permissions)
         }
     }
