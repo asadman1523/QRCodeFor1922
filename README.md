@@ -31,7 +31,7 @@ Licensed under the [Apache License 2.0][5]
 
 
 [1]: https://play.google.com/store/apps/details?id=com.jack.qrcodefor1922
-[2]: https://github.com/asadman1523/QRCodeFor1922/releases/tag/2.4_play_store
+[2]: https://github.com/asadman1523/QRCodeFor1922/releases/tag/3.1_old
 [3]: https://github.com/asadman1523/QRCodeFor1922/releases
 [4]: https://github.com/journeyapps/zxing-android-embedded
 [5]: http://www.apache.org/licenses/LICENSE-2.0
