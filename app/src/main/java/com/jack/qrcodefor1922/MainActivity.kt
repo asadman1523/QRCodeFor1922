@@ -59,6 +59,18 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }.launch(permissions)
+        } else {
+            val permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_PHONE_STATE)
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result: MutableMap<String, Boolean> ->
+                // 請求結果，返回一個map ，其中 key 為權限名稱，value 為是否權限是否賦予
+                if (result[Manifest.permission.CAMERA] == true && result[Manifest.permission.SEND_SMS] == true) {
+                    supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        add<ScannerFragment>(R.id.fragment_container_view)
+                    }
+                }
+            }.launch(permissions)
         }
     }
 
