@@ -5,4 +5,5 @@
     <string name="claim_mes">"The developer is not responsible for any loss caused by using this App. \nAgree please click agree."</string>
     <string name="agree">"Agree"</string>
     <string name="not_agree">"Leave"</string>
+    <string name="closeWhenDetect">Close app when redirect</string>
 </resources>

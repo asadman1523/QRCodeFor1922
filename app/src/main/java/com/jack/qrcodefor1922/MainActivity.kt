@@ -14,13 +14,16 @@ import androidx.fragment.app.commit
 
 class MainActivity : AppCompatActivity() {
 
-    private val AGREEMENT = "agreement"
+    companion object {
+        private const val AGREEMENT = "agreement"
+        const val PREFKEY = "1922qrcode"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         requestPermission()
-        val pref = getSharedPreferences("1922qrcode", MODE_PRIVATE)
+        val pref = getSharedPreferences(PREFKEY, MODE_PRIVATE)
         val agree = pref.getBoolean(AGREEMENT, false)
         if (!agree) {
             val builder = AlertDialog.Builder(this)
@@ -54,7 +57,6 @@ class MainActivity : AppCompatActivity() {
                     add<ScannerFragment>(R.id.fragment_container_view)
                 }
             }
-
         }.launch(permissions)
     }
 
