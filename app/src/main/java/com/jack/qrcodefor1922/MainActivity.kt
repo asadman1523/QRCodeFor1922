@@ -19,14 +19,17 @@ class MainActivity : AppCompatActivity() {
         private const val AGREEMENT = "agreement"
         const val PREFKEY = "1922qrcode"
     }
+    private var mAgreement = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        requestPermission()
+        val titlePostFix = resources.getString(R.string.app_name_postfix)
+        title = "$title($titlePostFix)"
+
         val pref = getSharedPreferences(PREFKEY, MODE_PRIVATE)
-        val agree = pref.getBoolean(AGREEMENT, false)
-        if (!agree) {
+        mAgreement = pref.getBoolean(AGREEMENT, false)
+        if (!mAgreement) {
             val builder = AlertDialog.Builder(this)
             builder.setCancelable(false)
                     .setTitle(getString(R.string.claim_title))
@@ -34,6 +37,7 @@ class MainActivity : AppCompatActivity() {
                     .setPositiveButton(getString(R.string.agree),object :DialogInterface.OnClickListener{
                         override fun onClick(dialog: DialogInterface?, which: Int) {
                             pref.edit().putBoolean(AGREEMENT, true).apply()
+                            addFragment()
                         }
                     })
                     .setNegativeButton(getString(R.string.not_agree), object :DialogInterface.OnClickListener{
@@ -43,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                     })
                     .show()
         }
-
+        requestPermission()
 
     }
 
@@ -53,9 +57,8 @@ class MainActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result: MutableMap<String, Boolean> ->
                 // 請求結果，返回一個map ，其中 key 為權限名稱，value 為是否權限是否賦予
                 if (result[Manifest.permission.CAMERA] == true && result[Manifest.permission.SEND_SMS] == true) {
-                    supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        add<ScannerFragment>(R.id.fragment_container_view)
+                    if (mAgreement) {
+                        addFragment()
                     }
                 }
             }.launch(permissions)
@@ -65,9 +68,8 @@ class MainActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result: MutableMap<String, Boolean> ->
                 // 請求結果，返回一個map ，其中 key 為權限名稱，value 為是否權限是否賦予
                 if (result[Manifest.permission.CAMERA] == true && result[Manifest.permission.SEND_SMS] == true) {
-                    supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        add<ScannerFragment>(R.id.fragment_container_view)
+                    if (mAgreement) {
+                        addFragment()
                     }
                 }
             }.launch(permissions)
@@ -77,5 +79,12 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    fun addFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            add<ScannerFragment>(R.id.fragment_container_view)
+        }
     }
 }
