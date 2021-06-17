@@ -3,9 +3,6 @@ package com.jack.qrcodefor1922
 import android.content.*
 import android.net.Uri
 import android.os.*
-import android.telephony.SmsManager
-import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +14,6 @@ import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
-import java.lang.Exception
 import java.util.*
 
 
@@ -89,11 +85,6 @@ class ScannerFragment : Fragment() {
         if (tmpText.contains(PREFIX) && arr.size > 2) {
             val num = arr[1]
             var mes = arr[2]
-            if (TextUtils.equals(num, "1922")) {
-                val manager = SmsManager.getDefault()
-                manager.sendTextMessage(num.toString(), null, mes, null, null)
-                mes = ""
-            }
             val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                 type = "text/plain"
                 data = Uri.parse("$PREFIX$num")
