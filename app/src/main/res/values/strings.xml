@@ -6,4 +6,5 @@
     <string name="agree">"Agree"</string>
     <string name="not_agree">"Leave"</string>
     <string name="closeWhenDetect">Close app when redirect</string>
+    <string name="app_name_postfix">Store version</string>
 </resources>
