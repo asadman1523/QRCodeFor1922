@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.jack.qrcodefor1922"
-        minSdkVersion 24
+        minSdkVersion 14
         targetSdkVersion 30
         versionCode 19
         versionName "3.1"
