@@ -1,6 +1,7 @@
 package com.jack.qrcodefor1922
 
 import android.content.*
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.os.*
 import android.view.LayoutInflater
@@ -30,7 +31,7 @@ class ScannerFragment : Fragment() {
     private lateinit var mPref: SharedPreferences
     private lateinit var mBgThread: HandlerThread
     private lateinit var mHandler: Handler
-    private var mCloseApp = true
+    private var mCloseApp = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBgThread = HandlerThread("timer")
@@ -59,7 +60,7 @@ class ScannerFragment : Fragment() {
     }
 
     private fun updateOptions() {
-        mCloseAppCheckBox.isChecked = mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)
+        mCloseAppCheckBox.isChecked = mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, mCloseApp)
         mCloseAppCheckBox.setOnCheckedChangeListener { box, closeApp ->
             mCloseApp = closeApp
         }
@@ -89,6 +90,7 @@ class ScannerFragment : Fragment() {
                 type = "text/plain"
                 data = Uri.parse("$PREFIX$num")
                 putExtra("sms_body", mes)
+                flags = FLAG_ACTIVITY_NEW_TASK
             }
             startActivity(sendIntent)
             if (mCloseApp) {
