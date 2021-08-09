@@ -30,7 +30,7 @@ class ScannerFragment : Fragment() {
     private lateinit var mPref: SharedPreferences
     private lateinit var mBgThread: HandlerThread
     private lateinit var mHandler: Handler
-    private var mCloseApp = true
+    private var mCloseApp = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBgThread = HandlerThread("timer")
@@ -59,7 +59,7 @@ class ScannerFragment : Fragment() {
     }
 
     private fun updateOptions() {
-        mCloseAppCheckBox.isChecked = mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)
+        mCloseAppCheckBox.isChecked = mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, mCloseApp)
         mCloseAppCheckBox.setOnCheckedChangeListener { box, closeApp ->
             mCloseApp = closeApp
         }
