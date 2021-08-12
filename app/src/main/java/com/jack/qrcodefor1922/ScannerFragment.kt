@@ -63,7 +63,8 @@ class ScannerFragment : Fragment() {
     }
 
     private fun updateOptions() {
-        mCloseAppCheckBox.isChecked = mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, mCloseApp)
+        mCloseApp = mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)
+        mCloseAppCheckBox.isChecked = mCloseApp
         mCloseAppCheckBox.setOnCheckedChangeListener { box, closeApp ->
             mCloseApp = closeApp
         }
