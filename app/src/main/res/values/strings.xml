@@ -7,4 +7,5 @@
     <string name="not_agree">"Leave"</string>
     <string name="closeWhenDetect">Close app when redirect</string>
     <string name="app_name_postfix">Store version</string>
+    <string name="darkness_version">Darkness version</string>
 </resources>
