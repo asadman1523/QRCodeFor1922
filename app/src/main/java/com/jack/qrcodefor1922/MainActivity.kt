@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                     .show()
         }
         requestPermission()
-
     }
 
     private fun requestPermission() {
@@ -103,6 +102,15 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse("https://github.com/asadman1523/QRCodeFor1922/releases/")
                 startActivity(intent)
+            }
+            R.id.settings -> {
+                if (supportFragmentManager.findFragmentByTag("settings") == null) {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_pref, SettingsPreference(), "settings")
+                        .addToBackStack("settings")
+                        .commit()
+                }
             }
         }
         return super.onOptionsItemSelected(item)

@@ -5,6 +5,14 @@
     <string name="claim_mes">"使用此App造成任何損失，開發者概不負責。\n同意請點同意。"</string>
     <string name="agree">"同意"</string>
     <string name="not_agree">"離開"</string>
-    <string name="closeWhenDetect">跳轉後關閉APP</string>
+    <string name="closeWhenDetect">跳轉至簡訊後關閉APP</string>
     <string name="app_name_postfix">暗黑版</string>
+    <string name="darkness_version">暗黑版</string>
+    <string name="settings">設定</string>
+    <string name="vibrate_when_success">掃描成功後震動</string>
+    <string name="normal">一般設定</string>
+    <string name="try_open_other_schema">偵測網址、電子郵件或其他簡訊</string>
+    <string name="confirm_open_schema">請注意風險!你確定要使用其他app開啟這段內容?\n %s</string>
+    <string name="detect_schema">偵測到非1922簡訊的跳轉內容</string>
+    <string name="copy_to_clipboard">複製到剪貼簿</string>
 </resources>
