@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/normal"/>
+
+    <SwitchPreferenceCompat
+        android:key="close_after_scan"
+        android:defaultValue="false"
+        app:title="@string/closeWhenDetect"/>
+
+    <SwitchPreferenceCompat
+        android:key="vibrate_when_success"
+        android:defaultValue="true"
+        app:title="@string/vibrate_when_success"/>
+
+    <SwitchPreferenceCompat
+        android:key="auto_open_identify_schema"
+        android:defaultValue="false"
+        app:title="@string/try_open_other_schema"/>
+
+</PreferenceScreen>
