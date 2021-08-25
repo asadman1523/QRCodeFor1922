@@ -10,6 +10,7 @@ Android 6.0 以前請下載[此版][2]
 ## Library
 此APP的QRCode解碼功能使用 [zxing-android-embedded][4] 的開放原始碼項目
 
+5.0以後改用 [Google ML Kit][6]
 
 
 ## License
@@ -30,10 +31,10 @@ Licensed under the [Apache License 2.0][5]
 	See the License for the specific language governing permissions and
 	limitations under the License.
 
-新版改用 [Google ML Kit][6]
+
 [1]: https://play.google.com/store/apps/details?id=com.jack.qrcodefor1922
 [2]: https://github.com/asadman1523/QRCodeFor1922/releases/tag/3.1_old
 [3]: https://github.com/asadman1523/QRCodeFor1922/releases
 [4]: https://github.com/journeyapps/zxing-android-embedded
 [5]: http://www.apache.org/licenses/LICENSE-2.0
-[5]: https://developers.google.com/ml-kit/vision/barcode-scanning
+[6]: https://developers.google.com/ml-kit/vision/barcode-scanning
