@@ -12,8 +12,8 @@ android {
         applicationId "com.jack.qrcodefor1922"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 29
-        versionName "5.0"
+        versionCode 31
+        versionName "5.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -53,5 +53,5 @@ dependencies {
     // CameraX Lifecycle Library
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     // CameraX View class
-    implementation "androidx.camera:camera-view:1.0.0-alpha27"
+    implementation "androidx.camera:camera-view:1.0.0-alpha28"
 }
