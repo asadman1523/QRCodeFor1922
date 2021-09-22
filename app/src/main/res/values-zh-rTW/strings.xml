@@ -9,11 +9,15 @@
     <string name="app_name_postfix">暗黑版</string>
     <string name="darkness_version">暗黑版</string>
     <string name="settings">設定</string>
-    <string name="vibrate_when_success">掃描成功後震動</string>
-    <string name="normal">一般設定</string>
+    <string name="vibrate_when_success">掃描1922成功後震動</string>
+    <string name="vibrate_when_copy_text_success">複製文字成功後震動</string>
+    <string name="settings_normal">一般設定</string>
+    <string name="settings_copy_text">複製文字</string>
+    <string name="settings_1922">掃描1922</string>
     <string name="try_open_other_schema">偵測網址、電子郵件或其他簡訊</string>
     <string name="confirm_open_schema">請注意風險!你確定要使用其他app開啟這段內容?\n %s</string>
     <string name="detect_schema">偵測到非1922簡訊的跳轉內容</string>
     <string name="copy_to_clipboard">複製到剪貼簿</string>
     <string name="choose_before_scan">選擇同行人數後再掃描</string>
+    <string name="auto_copy_non_1922">自動複製文字至剪貼簿</string>
 </resources>

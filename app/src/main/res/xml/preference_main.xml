@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="@string/normal"/>
+        android:title="@string/settings_normal"/>
 
     <SwitchPreferenceCompat
         android:key="close_after_scan"
@@ -11,13 +11,30 @@
         app:title="@string/closeWhenDetect"/>
 
     <SwitchPreferenceCompat
+        android:key="auto_open_identify_schema"
+        android:defaultValue="false"
+        app:title="@string/try_open_other_schema"/>
+
+    <PreferenceCategory
+        android:title="@string/settings_1922"/>
+
+    <SwitchPreferenceCompat
         android:key="vibrate_when_success"
         android:defaultValue="true"
         app:title="@string/vibrate_when_success"/>
 
+    <PreferenceCategory
+        android:title="@string/settings_copy_text"/>
+
     <SwitchPreferenceCompat
-        android:key="auto_open_identify_schema"
-        android:defaultValue="false"
-        app:title="@string/try_open_other_schema"/>
+        android:key="auto_copy_non_1922"
+        android:defaultValue="true"
+        app:title="@string/auto_copy_non_1922"/>
+
+    <SwitchPreferenceCompat
+        android:key="vibrate_when_copy_text_success"
+        android:defaultValue="true"
+        app:title="@string/vibrate_when_copy_text_success"/>
+
 
 </PreferenceScreen>

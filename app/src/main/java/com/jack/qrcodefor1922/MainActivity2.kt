@@ -172,14 +172,28 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     private fun copyToClipboard(text: String) {
-        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip: ClipData = ClipData.newPlainText("simple text", text)
-        clipboardManager.setPrimaryClip(clip)
-        Toast.makeText(
-            this,
-            String.format(getString(R.string.copy_already), text),
-            Toast.LENGTH_LONG
-        ).show()
+        if (mPref.getBoolean(PREF_AUTO_COPY_TEXT, true)) {
+            if (mPref.getBoolean(PREF_COPY_TEXT_VIBRATE, true)) {
+                vibrate()
+            }
+            val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip: ClipData = ClipData.newPlainText("simple text", text)
+            clipboardManager.setPrimaryClip(clip)
+            Toast.makeText(
+                this,
+                String.format(getString(R.string.copy_already), text),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun vibrate() {
+        val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            v.vibrate(VIBRATE_PATTERN, -1)
+        }
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -214,6 +228,8 @@ class MainActivity2 : AppCompatActivity() {
         private const val PREF_CLOSE_APP_AFTER_SCAN = "close_after_scan"
         private const val PREF_VIBRATE_WHEN_SUCCESS = "vibrate_when_success"
         private const val PREF_AUTO_OPEN_SCHEMA = "auto_open_identify_schema"
+        private const val PREF_AUTO_COPY_TEXT = "auto_copy_non_1922"
+        private const val PREF_COPY_TEXT_VIBRATE = "vibrate_when_copy_text_success"
     }
 
     override fun onRequestPermissionsResult(
@@ -307,17 +323,12 @@ class MainActivity2 : AppCompatActivity() {
                 return
             }
 
-            // Vibrate
-            if (mPref.getBoolean(PREF_VIBRATE_WHEN_SUCCESS, true)) {
-                val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
-                } else {
-                    v.vibrate(VIBRATE_PATTERN, -1)
-                }
-            }
             // Filter 1922
             if (barcode.valueType == Barcode.TYPE_SMS) {
+                // Vibrate
+                if (mPref.getBoolean(PREF_VIBRATE_WHEN_SUCCESS, true)) {
+                    vibrate()
+                }
                 if (TextUtils.equals(barcode.sms.phoneNumber, VAILD_NUMBER)) {
                     val manager = SmsManager.getDefault()
                     var appendFamilyStr = ""
