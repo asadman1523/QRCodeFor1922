@@ -264,7 +264,9 @@ class MainActivity2 : AppCompatActivity() {
 //                Log.d(TAG, "${image.width} ${image.height}")
                 val result = scanner.process(image)
                     .addOnSuccessListener { barcodes ->
-                        listener(barcodes[0])
+                        if (barcodes.size > 0) {
+                            listener(barcodes[0])
+                        }
                     }
                     .addOnFailureListener {
                         // Task failed with an exception
