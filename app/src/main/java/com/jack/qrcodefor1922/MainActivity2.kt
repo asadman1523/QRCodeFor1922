@@ -11,7 +11,7 @@ import android.util.Log
 import android.util.Size
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
@@ -38,6 +38,7 @@ class MainActivity2 : AppCompatActivity() {
     private var mLastText: String = ""
     private var mAgreement = false
     private var bDialogShowing = false
+    private var mWithFamilyNum = 0
     private lateinit var mPref: SharedPreferences
     private lateinit var mBgThread: HandlerThread
     private lateinit var mHandler: Handler
@@ -97,7 +98,26 @@ class MainActivity2 : AppCompatActivity() {
         mBgThread = HandlerThread("timer")
         mBgThread.start()
         mHandler = Handler(mBgThread.looper)
+        initWithFamily()
 
+    }
+
+    private fun initWithFamily() {
+        val bar = findViewById<SeekBar>(R.id.with_family_bar)
+        val view = findViewById<TextView>(R.id.with_family_view)
+        bar.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                view?.text = String.format(getString(R.string.with_family), progress)
+                mWithFamilyNum = progress
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+
+        })
     }
 
     private fun startCamera() {
@@ -295,7 +315,11 @@ class MainActivity2 : AppCompatActivity() {
                     val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                         type = "text/plain"
                         data = Uri.parse("smsto:${barcode.sms.phoneNumber}")
-                        putExtra("sms_body", barcode.sms.message)
+                        var appendFamilyStr = ""
+                        if (mWithFamilyNum != 0) {
+                            appendFamilyStr = "+$mWithFamilyNum"
+                        }
+                        putExtra("sms_body", "${barcode.sms.message} $appendFamilyStr")
                     }
                     startActivity(sendIntent)
                     if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
