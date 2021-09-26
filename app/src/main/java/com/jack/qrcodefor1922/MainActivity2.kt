@@ -262,7 +262,7 @@ class MainActivity2 : AppCompatActivity() {
                     InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
 //                Log.d(TAG, "${image.width} ${image.height}")
-                val result = scanner.process(image)
+                scanner.process(image)
                     .addOnSuccessListener { barcodes ->
                         if (barcodes.size > 0) {
                             listener(barcodes[0])
@@ -363,6 +363,9 @@ class MainActivity2 : AppCompatActivity() {
                             copyToClipboard(barcode.rawValue) }
                         dialog.setNegativeButton(android.R.string.cancel
                         ) { _, _ -> bDialogShowing = false }
+                        dialog.setOnCancelListener {
+                            bDialogShowing = false
+                        }
                         dialog.show()
                         bDialogShowing = true
                     } else {
