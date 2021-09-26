@@ -27,8 +27,9 @@ import kotlinx.android.synthetic.main.activity_main2.*
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 
-typealias QRCodeListener = (barcode: Barcode) -> Unit
+typealias QRCodeListener = (barcodes: List<Barcode>) -> Unit
 
 class MainActivity2 : AppCompatActivity() {
 
@@ -41,7 +42,7 @@ class MainActivity2 : AppCompatActivity() {
     private var mWithFamilyNum = 0
     private lateinit var mPref: SharedPreferences
     private lateinit var mBgThread: HandlerThread
-    private lateinit var mHandler: Handler
+    private lateinit var mHandler: BgHandler
 
 
     private lateinit var outputDirectory: File
@@ -97,7 +98,7 @@ class MainActivity2 : AppCompatActivity() {
 
         mBgThread = HandlerThread("timer")
         mBgThread.start()
-        mHandler = Handler(mBgThread.looper)
+        mHandler = BgHandler(mBgThread.looper)
         initWithFamily()
 
     }
@@ -223,6 +224,9 @@ class MainActivity2 : AppCompatActivity() {
         private const val PREF_AUTO_OPEN_SCHEMA = "auto_open_identify_schema"
         private const val PREF_AUTO_COPY_TEXT = "auto_copy_non_1922"
         private const val PREF_COPY_TEXT_VIBRATE = "vibrate_when_copy_text_success"
+        private val MSG_FORCE_TRIGGER = 1
+        private val MSG_COOLING_TIME = 2
+        private val mForeTrigger = AtomicBoolean(false)
     }
 
     override fun onRequestPermissionsResult(
@@ -264,9 +268,7 @@ class MainActivity2 : AppCompatActivity() {
 //                Log.d(TAG, "${image.width} ${image.height}")
                 scanner.process(image)
                     .addOnSuccessListener { barcodes ->
-                        if (barcodes.size > 0) {
-                            listener(barcodes[0])
-                        }
+                        listener(barcodes)
                     }
                     .addOnFailureListener {
                         // Task failed with an exception
@@ -308,77 +310,114 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     val callback = object : QRCodeListener {
-        override fun invoke(barcode: Barcode) {
-            val showSettings = supportFragmentManager.findFragmentByTag(PREF_FRAGMENT_TAG)
-                .takeIf { it != null }?.isVisible ?: false
-            if (barcode.rawValue == null || TextUtils.equals(mLastText, barcode.rawValue)
-                || showSettings || bDialogShowing){
-                return
+        override fun invoke(barcodes: List<Barcode>) {
+            if (barcodes.isNotEmpty()) {
+                if (!mHandler.hasMessages(MSG_FORCE_TRIGGER)) {
+                    mHandler.sendEmptyMessageDelayed(MSG_FORCE_TRIGGER, 1000)
+                    mHandler.sendEmptyMessageDelayed(MSG_COOLING_TIME, 4000)
+                }
+                // If not force trigger then wait 1922 barcode in 1 second
+                if (!mForeTrigger.get()) {
+                    for (barcode in barcodes) {
+                        if (barcode.valueType == Barcode.TYPE_SMS
+                            && TextUtils.equals(barcode.sms?.phoneNumber, VAILD_NUMBER)) {
+                            mHandler.removeMessages(MSG_FORCE_TRIGGER)
+                            mHandler.removeMessages(MSG_COOLING_TIME)
+                            triggerBarcode(barcode)
+                        }
+                    }
+                } else {
+                    // Trigger directly
+                    triggerBarcode(barcodes.first())
+                }
             }
+        }
+    }
 
-            // Filter 1922
-            if (barcode.valueType == Barcode.TYPE_SMS) {
-                // Vibrate
-                if (mPref.getBoolean(PREF_VIBRATE_WHEN_SUCCESS, true)) {
-                    vibrate()
+    private class BgHandler(looper: Looper) : Handler(looper) {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            when(msg.what) {
+                MSG_FORCE_TRIGGER -> {
+                    mForeTrigger.set(true)
                 }
-                if (TextUtils.equals(barcode.sms.phoneNumber, VAILD_NUMBER)) {
-                    val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
-                        type = "text/plain"
-                        data = Uri.parse("smsto:${barcode.sms.phoneNumber}")
-                        var appendFamilyStr = ""
-                        if (mWithFamilyNum != 0) {
-                            appendFamilyStr = "+$mWithFamilyNum"
-                        }
-                        putExtra("sms_body", "${barcode.sms.message} $appendFamilyStr")
-                    }
-                    startActivity(sendIntent)
-                    if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
-                        finish()
-                    }
+                MSG_COOLING_TIME -> {
+                    mForeTrigger.set(false)
                 }
-            } else {
-                if (mPref.getBoolean(PREF_AUTO_OPEN_SCHEMA, false)) {
-                    val sendIntent = Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse(barcode.rawValue)
+            }
+        }
+    }
+
+    private fun triggerBarcode(barcode: Barcode) {
+        val showSettings = supportFragmentManager.findFragmentByTag(PREF_FRAGMENT_TAG)
+            .takeIf { it != null }?.isVisible ?: false
+        if (barcode.rawValue == null || TextUtils.equals(mLastText, barcode.rawValue)
+            || showSettings || bDialogShowing){
+            return
+        }
+
+        // Filter 1922
+        if (barcode.valueType == Barcode.TYPE_SMS) {
+            // Vibrate
+            if (mPref.getBoolean(PREF_VIBRATE_WHEN_SUCCESS, true)) {
+                vibrate()
+            }
+            if (TextUtils.equals(barcode.sms.phoneNumber, VAILD_NUMBER)) {
+                val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
+                    type = "text/plain"
+                    data = Uri.parse("smsto:${barcode.sms.phoneNumber}")
+                    var appendFamilyStr = ""
+                    if (mWithFamilyNum != 0) {
+                        appendFamilyStr = "+$mWithFamilyNum"
                     }
-                    if (packageManager?.queryIntentActivities(sendIntent, 0) != null) {
-                        val dialog = MaterialAlertDialogBuilder(this@MainActivity2)
-                        dialog.setTitle(getString(R.string.detect_schema))
-                        dialog.setMessage(
-                            String.format(
-                                getString(R.string.confirm_open_schema),
-                                barcode.rawValue
-                            )
+                    putExtra("sms_body", "${barcode.sms.message} $appendFamilyStr")
+                }
+                startActivity(sendIntent)
+                if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
+                    finish()
+                }
+            }
+        } else {
+            if (mPref.getBoolean(PREF_AUTO_OPEN_SCHEMA, false)) {
+                val sendIntent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse(barcode.rawValue)
+                }
+                if (packageManager?.queryIntentActivities(sendIntent, 0) != null) {
+                    val dialog = MaterialAlertDialogBuilder(this@MainActivity2)
+                    dialog.setTitle(getString(R.string.detect_schema))
+                    dialog.setMessage(
+                        String.format(
+                            getString(R.string.confirm_open_schema),
+                            barcode.rawValue
                         )
-                        dialog.setPositiveButton(
-                            getString(android.R.string.ok)
-                        ) { dialog, which ->
-                            bDialogShowing = false
-                            startActivity(sendIntent) }
-                        dialog.setNeutralButton(
-                            getString(R.string.copy_to_clipboard)
-                        ) { dialog, which ->
-                            bDialogShowing = false
-                            copyToClipboard(barcode.rawValue) }
-                        dialog.setNegativeButton(android.R.string.cancel
-                        ) { _, _ -> bDialogShowing = false }
-                        dialog.setOnCancelListener {
-                            bDialogShowing = false
-                        }
-                        dialog.show()
-                        bDialogShowing = true
-                    } else {
-                        copyToClipboard(barcode.rawValue)
+                    )
+                    dialog.setPositiveButton(
+                        getString(android.R.string.ok)
+                    ) { dialog, which ->
+                        bDialogShowing = false
+                        startActivity(sendIntent) }
+                    dialog.setNeutralButton(
+                        getString(R.string.copy_to_clipboard)
+                    ) { dialog, which ->
+                        bDialogShowing = false
+                        copyToClipboard(barcode.rawValue) }
+                    dialog.setNegativeButton(android.R.string.cancel
+                    ) { _, _ -> bDialogShowing = false }
+                    dialog.setOnCancelListener {
+                        bDialogShowing = false
                     }
+                    dialog.show()
+                    bDialogShowing = true
                 } else {
                     copyToClipboard(barcode.rawValue)
                 }
+            } else {
+                copyToClipboard(barcode.rawValue)
             }
-            mHandler.postDelayed(Runnable {
-                mLastText = ""
-            }, 1500)
-            mLastText = barcode.rawValue
         }
+        mHandler.postDelayed(Runnable {
+            mLastText = ""
+        }, 1500)
+        mLastText = barcode.rawValue
     }
 }
