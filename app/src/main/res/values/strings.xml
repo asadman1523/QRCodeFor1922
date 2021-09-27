@@ -18,7 +18,8 @@
     <string name="confirm_open_schema">It may be risk!Do you want to open this content form other app?\n%s</string>
     <string name="detect_schema">Detect content which is not 1922 SMS</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
-    <string name="with_family" translatable="false">+%s</string>
     <string name="choose_before_scan">Select number of accompany -> Scan QRCode</string>
     <string name="auto_copy_non_1922">Auto copy text to clipboard</string>
+    <string name="enter_accompany_num">Enter accompany number"</string>
+    <string name="dialog_confirm">Confirm</string>
 </resources>

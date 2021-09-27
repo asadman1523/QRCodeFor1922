@@ -20,4 +20,6 @@
     <string name="copy_to_clipboard">複製到剪貼簿</string>
     <string name="choose_before_scan">選擇同行人數 -> 掃描QRCode</string>
     <string name="auto_copy_non_1922">自動複製文字至剪貼簿</string>
+    <string name="enter_accompany_num">輸入同行人數</string>
+    <string name="dialog_confirm">確定</string>
 </resources>

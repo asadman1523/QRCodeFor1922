@@ -76,17 +76,29 @@
             app:layout_constraintTop_toBottomOf="@id/seekbar_text" />
 
         <TextView
+            android:id="@+id/plus_sign"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:textSize="28sp"
+            android:theme="@style/Theme.QRcodeFor1922"
+            app:layout_constraintBottom_toBottomOf="@+id/with_family_bar"
+            app:layout_constraintEnd_toStartOf="@id/with_family_view"
+            app:layout_constraintTop_toTopOf="@+id/with_family_bar"
+            tools:text="+" />
+
+        <TextView
             android:id="@+id/with_family_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            android:text="+0"
-            android:textSize="34sp"
+            android:text="0"
+            android:textSize="28sp"
             android:theme="@style/Theme.QRcodeFor1922"
             app:layout_constraintBottom_toBottomOf="@+id/with_family_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/with_family_bar"
-            tools:text="+0" />
+            tools:text="0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
