@@ -47,16 +47,18 @@
         android:id="@+id/with_family"
         android:layout_width="0dp"
         android:layout_height="100dp"
-        android:background="@color/black"
+        android:theme="@style/Theme.QRcodeFor1922.BottomLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
+            android:id="@+id/seekbar_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/choose_before_scan"
-            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:theme="@style/Theme.QRcodeFor1922"
             app:layout_constraintBottom_toTopOf="@+id/with_family_bar"
             app:layout_constraintStart_toStartOf="@+id/with_family_bar"
             app:layout_constraintTop_toTopOf="parent" />
@@ -65,14 +67,13 @@
             android:id="@+id/with_family_bar"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:max="5"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/with_family_view"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/seekbar_text" />
 
         <TextView
             android:id="@+id/with_family_view"
@@ -80,8 +81,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:text="+0"
-            android:textColor="@color/white"
-            android:textSize="50sp"
+            android:textSize="34sp"
+            android:theme="@style/Theme.QRcodeFor1922"
             app:layout_constraintBottom_toBottomOf="@+id/with_family_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/with_family_bar"

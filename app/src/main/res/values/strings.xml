@@ -19,6 +19,6 @@
     <string name="detect_schema">Detect content which is not 1922 SMS</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="with_family" translatable="false">+%s</string>
-    <string name="choose_before_scan">Select number of accompany and scan</string>
+    <string name="choose_before_scan">Select number of accompany -> Scan QRCode</string>
     <string name="auto_copy_non_1922">Auto copy text to clipboard</string>
 </resources>
