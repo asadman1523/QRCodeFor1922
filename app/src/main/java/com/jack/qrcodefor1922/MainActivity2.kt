@@ -7,11 +7,14 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.*
 import android.telephony.SmsManager
+import android.text.InputFilter
+import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
 import android.util.Size
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +22,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.setPadding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -29,6 +33,7 @@ import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
+
 
 typealias QRCodeListener = (barcodes: List<Barcode>) -> Unit
 
@@ -114,10 +119,17 @@ class MainActivity2 : AppCompatActivity() {
     private fun initWithFamily() {
         val bar = findViewById<SeekBar>(R.id.with_family_bar)
         val view = findViewById<TextView>(R.id.with_family_view)
+        val plus = findViewById<TextView>(R.id.plus_sign)
+        view.setOnClickListener {
+            showEdittextDialog(view)
+        }
+        plus.setOnClickListener {
+            showEdittextDialog(view)
+        }
         bar.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                view?.text = String.format(getString(R.string.with_family), progress)
                 mWithFamilyNum = progress
+                view.text = mWithFamilyNum.toString()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -127,6 +139,37 @@ class MainActivity2 : AppCompatActivity() {
             }
 
         })
+    }
+
+    private fun showEdittextDialog(view: TextView) {
+        val editText = EditText(this)
+        editText.inputType = InputType.TYPE_CLASS_NUMBER
+        val filter = InputFilter.LengthFilter(2)
+        editText.filters = arrayOf(filter)
+
+        AlertDialog.Builder(this)
+            .setCancelable(false)
+            .setTitle(getString(R.string.enter_accompany_num))
+            .setView(editText)
+            .setPositiveButton(getString(R.string.dialog_confirm)){_,_->
+                editText.let {
+                    if (it.text.isNotEmpty()) {
+                        var num = it.text.toString().toInt()
+                        if (num > 10) num = 10
+                        mWithFamilyNum = num
+                    } else {
+                        mWithFamilyNum = 0
+                    }
+                    view.text = mWithFamilyNum.toString()
+                }
+            }.show()
+
+        editText.postDelayed({
+            editText.requestFocus()
+            val input = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            input.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+        }, 300)
+
     }
 
     private fun startCamera() {
