@@ -22,4 +22,6 @@
     <string name="auto_copy_non_1922">自動複製文字至剪貼簿</string>
     <string name="enter_accompany_num">輸入同行人數</string>
     <string name="dialog_confirm">確定</string>
+    <string name="hint_permission_title">錯誤</string>
+    <string name="hint_permission_mes">你必須同意所有權限才能使用此app</string>
 </resources>

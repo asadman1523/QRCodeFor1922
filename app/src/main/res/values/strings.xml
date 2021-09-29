@@ -22,4 +22,6 @@
     <string name="auto_copy_non_1922">Auto copy text to clipboard</string>
     <string name="enter_accompany_num">Enter accompany number"</string>
     <string name="dialog_confirm">Confirm</string>
+    <string name="hint_permission_title">Error</string>
+    <string name="hint_permission_mes">You must allow all permissions to use the app.</string>
 </resources>
