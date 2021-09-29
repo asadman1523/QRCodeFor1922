@@ -394,7 +394,11 @@ class MainActivity : AppCompatActivity() {
                         getString(android.R.string.ok)
                     ) { dialog, which ->
                         bRedirectDialogShowing = false
-                        startActivity(sendIntent)
+                        try {
+                            startActivity(sendIntent)
+                        } catch (e : Exception) {
+                            Toast.makeText(this, getString(R.string.nothing_happen), Toast.LENGTH_SHORT).show()
+                        }
                     }
                     dialog.setNeutralButton(
                         getString(R.string.copy_to_clipboard)

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">1922QRCodeScanner</string>
+    <string name="app_name">1922QRCodeScanner(darkness)</string>
     <string name="copy_already">"Copy text already.\n%s"</string>
     <string name="claim_title">"Disclaimer"</string>
     <string name="claim_mes">"The developer is not responsible for any loss caused by using this App. \nAgree please click agree."</string>
@@ -24,4 +24,5 @@
     <string name="dialog_confirm">Confirm</string>
     <string name="hint_permission_title">Error</string>
     <string name="hint_permission_mes">You must allow all permissions to use the app.</string>
+    <string name="nothing_happen">Redirect fail</string>
 </resources>
