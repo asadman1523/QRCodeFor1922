@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 typealias QRCodeListener = (barcodes: List<Barcode>) -> Unit
 
-class MainActivity2 : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val FRAGMENT_TAG_SETTINGS = "settings"
@@ -128,7 +128,7 @@ class MainActivity2 : AppCompatActivity() {
             startCameraLock()
         } else {
             ActivityCompat.requestPermissions(
-                this@MainActivity2, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+                this@MainActivity, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
     }
@@ -394,7 +394,7 @@ class MainActivity2 : AppCompatActivity() {
                     data = Uri.parse(barcode.rawValue)
                 }
                 if (packageManager?.queryIntentActivities(sendIntent, 0) != null) {
-                    val dialog = MaterialAlertDialogBuilder(this@MainActivity2)
+                    val dialog = MaterialAlertDialogBuilder(this@MainActivity)
                     dialog.setTitle(getString(R.string.detect_schema))
                     dialog.setMessage(
                         String.format(
