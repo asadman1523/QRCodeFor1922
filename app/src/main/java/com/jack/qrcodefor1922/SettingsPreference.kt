@@ -3,7 +3,7 @@ package com.jack.qrcodefor1922
 import android.os.Bundle
 import android.view.View
 import androidx.preference.PreferenceFragmentCompat
-import com.jack.qrcodefor1922.MainActivity2.Companion.PREFKEY
+import com.jack.qrcodefor1922.MainActivity.Companion.PREFKEY
 
 
 class SettingsPreference : PreferenceFragmentCompat() {
