@@ -372,7 +372,7 @@ class MainActivity : AppCompatActivity() {
                 vibrate()
             }
             if (TextUtils.equals(barcode.sms?.phoneNumber, VAILD_NUMBER)) {
-                val manager = SmsManager.getDefault()
+                val manager = SmsManager.getSmsManagerForSubscriptionId(SmsManager.getDefaultSmsSubscriptionId())
                 var appendFamilyStr = ""
                 if (mAccompanyNum != 0) {
                     appendFamilyStr = "+$mAccompanyNum"
@@ -385,7 +385,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 startActivity(sendIntent)
                 if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
-                    finish()
+//                    finish()
                 }
             }
         } else {
