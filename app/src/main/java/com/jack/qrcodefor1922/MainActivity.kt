@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var mLastTriggerText: String = ""
+    private var mHasTrigger = false
     private var bAgreement = false
     private var bRedirectDialogShowing = false
     private var mAccompanyNum = 0
@@ -321,7 +322,7 @@ class MainActivity : AppCompatActivity() {
         override fun invoke(barcodes: List<Barcode>) {
             if (barcodes.isNotEmpty()) {
                 if (!mHandler.hasMessages(MSG_FORCE_TRIGGER)) {
-                    mHandler.sendEmptyMessageDelayed(MSG_FORCE_TRIGGER, 1000)
+                    mHandler.sendEmptyMessageDelayed(MSG_FORCE_TRIGGER, 700)
                     mHandler.sendEmptyMessageDelayed(MSG_COOLING_TIME, 4000)
                 }
                 if (!mForeTrigger.get()) {
@@ -360,7 +361,8 @@ class MainActivity : AppCompatActivity() {
     private fun triggerBarcode(barcode: Barcode) {
         val showSettings = supportFragmentManager.findFragmentByTag(FRAGMENT_TAG_SETTINGS)
             .takeIf { it != null }?.isVisible ?: false
-        if (barcode.rawValue == null || TextUtils.equals(mLastTriggerText, barcode.rawValue)
+        if (barcode.rawValue == null || mHasTrigger ||
+            TextUtils.equals(mLastTriggerText, barcode.rawValue)
             || showSettings || bRedirectDialogShowing
         ) {
             return
@@ -431,7 +433,9 @@ class MainActivity : AppCompatActivity() {
         }
         mHandler.postDelayed(Runnable {
             mLastTriggerText = ""
+            mHasTrigger = false
         }, 1500)
         mLastTriggerText = barcode.rawValue
+        mHasTrigger = true
     }
 }
