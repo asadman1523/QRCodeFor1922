@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jack.qrcodefor1922">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
     <!--CameraX-->
     <uses-feature android:name="android.hardware.camera.any" />
     <uses-permission android:name="android.permission.CAMERA" />
-
+    <uses-permission android:name="android.permission.VIBRATE" />
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -21,6 +20,11 @@
         </intent>
     </queries>
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
@@ -29,7 +33,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QRcodeFor1922">
-        <activity android:name=".MainActivity"
+        <activity android:name=".ui.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

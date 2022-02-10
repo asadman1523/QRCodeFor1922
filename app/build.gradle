@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.jack.qrcodefor1922"
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 44
-        versionName "5.4"
+        targetSdkVersion 31
+        versionCode 45
+        versionName "5.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,6 +30,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding = true
     }
 }
 
@@ -54,4 +57,9 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     // CameraX View class
     implementation "androidx.camera:camera-view:1.0.0-alpha28"
+    def lifecycle_version = "2.4.1"
+    def arch_version = "2.1.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+
 }

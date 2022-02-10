@@ -7,6 +7,7 @@ import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import com.jack.qrcodefor1922.ui.QRCodeListener
 
 class QRCodeAnalyzer(private val listener: QRCodeListener) : ImageAnalysis.Analyzer {
     private val options = BarcodeScannerOptions.Builder()
