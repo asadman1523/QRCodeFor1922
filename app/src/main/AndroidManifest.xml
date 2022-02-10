@@ -23,11 +23,6 @@
         </intent>
     </queries>
 
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-
-    <uses-permission android:name="android.permission.VIBRATE" />
-
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
@@ -37,7 +32,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QRcodeFor1922">
         <activity android:name=".ui.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
