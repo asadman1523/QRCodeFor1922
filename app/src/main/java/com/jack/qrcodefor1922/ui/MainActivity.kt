@@ -2,6 +2,7 @@ package com.jack.qrcodefor1922.ui
 
 import android.Manifest
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -15,6 +16,7 @@ import android.util.Log
 import android.util.Size
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.SeekBar
@@ -131,6 +133,18 @@ class MainActivity : AppCompatActivity() {
                     viewModel.resetRedirectDialog()
                 }
                 dialog.show()
+            }
+        }
+        viewModel.showHistoryPrompt.observe(this) {
+            if (it == true) {
+                val builder = AlertDialog.Builder(this).apply {
+                    setTitle(getString(R.string.new_feature))
+                    setMessage(getString(R.string.history_feature_mes))
+                    setPositiveButton(getText(R.string.dialog_confirm)
+                    ) { _, _ -> viewModel.confirmNewFeature() }
+                    setOnCancelListener { viewModel.confirmNewFeature() }
+                }
+                builder.show()
             }
         }
         viewModel.ready()

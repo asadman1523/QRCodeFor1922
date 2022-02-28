@@ -6,11 +6,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    version = 2,
+    version = 1,
     entities = [ScanResult::class],
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2)
-                     ],
     exportSchema = true
 )
 @TypeConverters(Converters::class)

@@ -13,8 +13,8 @@ android {
         applicationId "com.jack.qrcodefor1922"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 45
-        versionName "5.5"
+        versionCode 46
+        versionName "5.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -75,6 +75,7 @@ dependencies {
 
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:$roomVersion")
+    kapt "android.arch.persistence.room:compiler:$roomVersion"
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$roomVersion")
