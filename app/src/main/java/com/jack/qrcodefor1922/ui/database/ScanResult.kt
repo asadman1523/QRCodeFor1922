@@ -8,7 +8,7 @@ import java.util.*
 enum class TYPE {SMS_1922, TEXT, REDIRECT}
 @Entity
 data class ScanResult (
-    @PrimaryKey(autoGenerate = true) val uid: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(defaultValue = "0") val timestamp: Date,
     @ColumnInfo val content: String,
     @ColumnInfo val type: TYPE

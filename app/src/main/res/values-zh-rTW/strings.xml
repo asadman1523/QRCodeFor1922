@@ -26,4 +26,6 @@
     <string name="hint_permission_mes">你必須同意所有權限才能使用此app</string>
     <string name="nothing_happen">跳轉失敗...</string>
     <string name="setting_history">歷史紀錄</string>
+    <string name="new_feature">新功能!</string>
+    <string name="history_feature_mes">"可以從右上角查看掃描過的歷史紀錄囉!"</string>
 </resources>

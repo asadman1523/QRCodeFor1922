@@ -4,7 +4,7 @@ import androidx.room.*
 
 @Dao
 interface ScanResultDao {
-    @Query("SELECT * FROM scanresult ORDER BY uid DESC")
+    @Query("SELECT * FROM scanresult ORDER BY id DESC")
     suspend fun getAll(): List<ScanResult>
 
     @Insert

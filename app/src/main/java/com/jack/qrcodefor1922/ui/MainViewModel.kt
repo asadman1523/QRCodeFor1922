@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.*
 import android.net.Uri
 import android.os.*
+import android.telephony.SmsManager
 import android.text.TextUtils
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import com.jack.qrcodefor1922.ui.MainActivity.Companion.PREFKEY
 import com.jack.qrcodefor1922.ui.database.AppDatabase
 import com.jack.qrcodefor1922.ui.database.ScanResult
 import com.jack.qrcodefor1922.ui.database.TYPE
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -38,6 +40,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _startActivity = MutableLiveData<Intent?>()
     private val _finishActivity = MutableLiveData<Boolean?>()
     private val _showDetectOtherDialog = MutableLiveData<Barcode?>()
+    private val _showHistoryPrompt = MutableLiveData<Boolean?>()
     private val _vibrate = MutableLiveData<Boolean?>()
     val showAgreement:LiveData<Boolean?> = _showAgreement
     val startCamera:LiveData<Boolean?> = _startCamera
@@ -46,6 +49,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val startActivity:LiveData<Intent?> = _startActivity
     val finishActivity:LiveData<Boolean?> = _finishActivity
     val showDetectOtherDialog:LiveData<Barcode?> = _showDetectOtherDialog
+    val showHistoryPrompt:LiveData<Boolean?> = _showHistoryPrompt
     val vibrate:LiveData<Boolean?>  = _vibrate
 
     private lateinit var mPref: SharedPreferences
@@ -70,17 +74,28 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun ready() {
         bAgreement = mPref.getBoolean(AGREEMENT, false)
+        val historyPrompt = mPref.getBoolean(FEATURE_HISTORY, false)
+
         if (!bAgreement) {
             _showAgreement.value = true
-        } else {
+        } else if (!historyPrompt)
+            viewModelScope.launch {
+                delay(1000)
+                _showHistoryPrompt.value = !historyPrompt
+            }
+        else {
             _startCamera.value = true
         }
     }
 
     fun userAgree() {
         mPref.edit().putBoolean(AGREEMENT, true).apply()
-        // Request camera permissions
-        _startCamera.value = true
+        ready()
+    }
+
+    fun confirmNewFeature() {
+        mPref.edit().putBoolean(FEATURE_HISTORY, true).apply()
+        ready()
     }
 
     fun userEnterAccompanyNum(num: String) {
@@ -108,6 +123,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 _vibrate.value = true
             }
             if (TextUtils.equals(barcode.sms?.phoneNumber, VAILD_NUMBER)) {
+                var manager: SmsManager
+                if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    manager = getApplication<Application>().getSystemService(SmsManager::class.java)
+                    manager = manager.createForSubscriptionId(SmsManager.getDefaultSmsSubscriptionId())
+                } else if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    manager = SmsManager.getSmsManagerForSubscriptionId(SmsManager.getDefaultSmsSubscriptionId())
+                } else {
+                    manager = SmsManager.getDefault()
+                }
+                var appendFamilyStr = ""
+                if (mAccompanyNum != 0) {
+                    appendFamilyStr = "+$mAccompanyNum"
+                }
+                manager.sendTextMessage(barcode.sms.phoneNumber, null, "${barcode.sms.message} $appendFamilyStr", null, null)
                 val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                     type = "text/plain"
                     data = Uri.parse("smsto:${barcode.sms?.phoneNumber}")
@@ -115,7 +144,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     if (mAccompanyNum != 0) {
                         appendFamilyStr = "+$mAccompanyNum"
                     }
-                    putExtra("sms_body", "${barcode.sms?.message} $appendFamilyStr")
+                    putExtra("sms_body", "")
                 }
                 _startActivity.value = sendIntent
                 if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
@@ -181,7 +210,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun copyToClipboard(text: String) {
-        Log.v("QQAQ", "copy")
         if (mPref.getBoolean(PREF_AUTO_COPY_TEXT, true)) {
             if (mPref.getBoolean(PREF_COPY_TEXT_VIBRATE, true)) {
                 _vibrate.value = true
@@ -250,6 +278,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
         private const val AGREEMENT = "agreement"
+        private const val FEATURE_HISTORY = "feature_history"
         private const val VAILD_NUMBER = "1922"
         private const val PREF_CLOSE_APP_AFTER_SCAN = "close_after_scan"
         private const val PREF_VIBRATE_WHEN_SUCCESS = "vibrate_when_success"
