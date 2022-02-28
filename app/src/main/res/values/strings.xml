@@ -25,4 +25,5 @@
     <string name="hint_permission_title">Error</string>
     <string name="hint_permission_mes">You must allow all permissions to use the app.</string>
     <string name="nothing_happen">Redirect fail</string>
+    <string name="setting_history">History</string>
 </resources>

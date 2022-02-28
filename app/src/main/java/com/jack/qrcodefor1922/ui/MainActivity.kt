@@ -313,6 +313,16 @@ class MainActivity : AppCompatActivity() {
                     viewModel.isSettingsShowing(true)
                 }
             }
+            R.id.history -> {
+                if (supportFragmentManager.findFragmentByTag(FRAGMENT_TAG_HISTORY) == null) {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_pref, ScanResultFragment(), FRAGMENT_TAG_HISTORY)
+                        .addToBackStack(FRAGMENT_TAG_HISTORY)
+                        .commit()
+                    viewModel.isSettingsShowing(true)
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -321,7 +331,9 @@ class MainActivity : AppCompatActivity() {
         override fun invoke(barcodes: List<Barcode>) {
             val isSettingsShow = supportFragmentManager.findFragmentByTag(FRAGMENT_TAG_SETTINGS)
                 .takeIf { it != null }?.isVisible ?: false
-            viewModel.isSettingsShowing(isSettingsShow)
+            val isHistoryShow = supportFragmentManager.findFragmentByTag(FRAGMENT_TAG_HISTORY)
+                .takeIf { it != null }?.isVisible ?: false
+            viewModel.isSettingsShowing(isSettingsShow || isHistoryShow)
             viewModel.newBarcodes(barcodes)
         }
     }
@@ -340,6 +352,7 @@ class MainActivity : AppCompatActivity() {
         const val PREFKEY = "1922qrcode"
         private const val TAG = "QRCodeFor1922_new_api"
         private const val FRAGMENT_TAG_SETTINGS = "settings"
+        private const val FRAGMENT_TAG_HISTORY = "history"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val VIBRATE_PATTERN = longArrayOf(500, 500)
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)

@@ -2,4 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/darkness" android:title="@string/darkness_version"/>
     <item android:id="@+id/settings" android:title="@string/settings"/>
+    <item android:id="@+id/history" android:title="@string/setting_history"/>
 </menu>
