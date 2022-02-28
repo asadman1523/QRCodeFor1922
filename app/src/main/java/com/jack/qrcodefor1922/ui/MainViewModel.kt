@@ -5,12 +5,21 @@ import android.content.*
 import android.net.Uri
 import android.os.*
 import android.text.TextUtils
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import com.google.mlkit.vision.barcode.Barcode
+import com.jack.qrcodefor1922.Utils.getDatabaseDao
 import com.jack.qrcodefor1922.ui.MainActivity.Companion.PREFKEY
+import com.jack.qrcodefor1922.ui.database.AppDatabase
+import com.jack.qrcodefor1922.ui.database.ScanResult
+import com.jack.qrcodefor1922.ui.database.TYPE
+import kotlinx.coroutines.launch
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -113,6 +122,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     _finishActivity.value = true
                 }
             }
+            saveResultToDb(barcode.sms?.message, TYPE.SMS_1922)
         } else {
             if (mPref.getBoolean(PREF_AUTO_OPEN_SCHEMA, false)) {
                 synchronized(obj) {
@@ -132,8 +142,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         copyToClipboard(barcode.rawValue)
                     }
                 }
+                saveResultToDb(barcode.rawValue, TYPE.REDIRECT)
             } else {
                 copyToClipboard(barcode.rawValue)
+                saveResultToDb(barcode.rawValue, TYPE.TEXT)
             }
         }
         mHandler.postDelayed(Runnable {
@@ -169,6 +181,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun copyToClipboard(text: String) {
+        Log.v("QQAQ", "copy")
         if (mPref.getBoolean(PREF_AUTO_COPY_TEXT, true)) {
             if (mPref.getBoolean(PREF_COPY_TEXT_VIBRATE, true)) {
                 _vibrate.value = true
@@ -205,6 +218,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun resetStartCamera() {
         _startCamera.value = null
+    }
+
+    fun saveResultToDb(rawValue: String?, type: TYPE) {
+        rawValue?.let {
+            saveResultToDbLocked(it, type)
+        }
+    }
+
+    private fun saveResultToDbLocked(data: String, type: TYPE) {
+        val resultDao = getDatabaseDao(getApplication())
+        viewModelScope.launch {
+            resultDao.insertAll(ScanResult(Date(), data, type))
+        }
     }
 
     private class BgHandler(looper: Looper) : Handler(looper) {
