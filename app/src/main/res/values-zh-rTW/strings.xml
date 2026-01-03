@@ -5,7 +5,6 @@
     <string name="claim_mes">"使用此App造成任何損失，開發者概不負責。\n同意請點同意。"</string>
     <string name="agree">"同意"</string>
     <string name="not_agree">"離開"</string>
-    <string name="closeWhenDetect">跳轉後關閉APP</string>
     <string name="app_name_postfix">商店版</string>
     <string name="settings">設定</string>
     <string name="settings_normal">一般設定</string>

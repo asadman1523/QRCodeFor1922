@@ -86,9 +86,6 @@ class MainActivity : AppCompatActivity() {
                         viewModel.resetRedirectDialog()
                         try {
                             startActivity(info.intent)
-                            if (info.shouldClose) {
-                                finish()
-                            }
                         } catch (e: Exception) {
                             Toast.makeText(
                                 this,

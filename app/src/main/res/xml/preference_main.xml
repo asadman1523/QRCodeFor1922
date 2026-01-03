@@ -6,11 +6,6 @@
         android:title="@string/settings_normal"/>
 
     <SwitchPreferenceCompat
-        android:key="close_after_scan"
-        android:defaultValue="false"
-        app:title="@string/closeWhenDetect"/>
-
-    <SwitchPreferenceCompat
         android:key="auto_copy_non_1922"
         android:defaultValue="true"
         app:title="@string/auto_copy_non_1922"/>

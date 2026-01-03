@@ -101,7 +101,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _vibrate.value = true
         var intent: Intent? = null
         var isCopied = false
-        var shouldClose = false
 
         // Check if it is a valid intent (URL, SMS, etc.)
         if (barcode.valueType == Barcode.TYPE_SMS) {
@@ -109,9 +108,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 type = "text/plain"
                 data = Uri.parse("smsto:${barcode.sms?.phoneNumber}")
                 putExtra("sms_body", "${barcode.sms?.message}")
-            }
-            if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
-                shouldClose = true
             }
             saveResultToDb(rawValue, TYPE.SMS_1922)
         } else {
@@ -135,7 +131,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        _showScanResultDialog.value = ScanResultInfo(rawValue, barcode.valueType == Barcode.TYPE_SMS, isCopied, intent, shouldClose)
+        _showScanResultDialog.value = ScanResultInfo(rawValue, barcode.valueType == Barcode.TYPE_SMS, isCopied, intent)
         bRedirectDialogShowing = true
 
         resetTriggerJob?.cancel()
@@ -171,7 +167,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
         // For TEXT, intent is null
 
-        _showScanResultDialog.value = ScanResultInfo(rawValue, isSms, false, intent, false)
+        _showScanResultDialog.value = ScanResultInfo(rawValue, isSms, false, intent)
     }
 
     fun newBarcodes(barcodes: List<Barcode>) {
@@ -239,10 +235,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         private const val AGREEMENT = "agreement"
         private const val FEATURE_HISTORY = "feature_history"
-        private const val PREF_CLOSE_APP_AFTER_SCAN = "close_after_scan"
         private const val PREF_AUTO_COPY_TEXT = "auto_copy_non_1922"
         private val mForeTrigger = AtomicBoolean(false)
-        private val obj = Object()
     }
 }
 
@@ -250,6 +244,5 @@ data class ScanResultInfo(
     val rawValue: String,
     val isSms: Boolean,
     val isCopied: Boolean,
-    val intent: Intent?,
-    val shouldClose: Boolean
+    val intent: Intent?
 )
