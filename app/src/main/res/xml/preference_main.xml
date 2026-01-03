@@ -10,26 +10,9 @@
         android:defaultValue="false"
         app:title="@string/closeWhenDetect"/>
 
-    <PreferenceCategory
-        android:title="@string/settings_1922"/>
-
-    <SwitchPreferenceCompat
-        android:key="vibrate_when_success"
-        android:defaultValue="true"
-        app:title="@string/vibrate_when_success"/>
-
-    <PreferenceCategory
-        android:title="@string/settings_copy_text"/>
-
     <SwitchPreferenceCompat
         android:key="auto_copy_non_1922"
         android:defaultValue="true"
         app:title="@string/auto_copy_non_1922"/>
-
-    <SwitchPreferenceCompat
-        android:key="vibrate_when_copy_text_success"
-        android:defaultValue="true"
-        app:title="@string/vibrate_when_copy_text_success"/>
-
 
 </PreferenceScreen>

@@ -100,10 +100,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
 
+        // Filter 1922 number
         if (barcode.valueType == Barcode.TYPE_SMS) {
-            if (mPref.getBoolean(PREF_VIBRATE_WHEN_SUCCESS, true)) {
-                _vibrate.value = true
-            }
+            _vibrate.value = true
             val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                 type = "text/plain"
                 data = Uri.parse("smsto:${barcode.sms?.phoneNumber}")
@@ -155,9 +154,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun copyToClipboard(text: String) {
         if (mPref.getBoolean(PREF_AUTO_COPY_TEXT, true)) {
-            if (mPref.getBoolean(PREF_COPY_TEXT_VIBRATE, true)) {
-                _vibrate.value = true
-            }
+            _vibrate.value = true
             val clipboardManager =
                 getApplication<Application>().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip: ClipData = ClipData.newPlainText("simple text", text)
@@ -224,9 +221,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         private const val AGREEMENT = "agreement"
         private const val FEATURE_HISTORY = "feature_history"
         private const val PREF_CLOSE_APP_AFTER_SCAN = "close_after_scan"
-        private const val PREF_VIBRATE_WHEN_SUCCESS = "vibrate_when_success"
         private const val PREF_AUTO_COPY_TEXT = "auto_copy_non_1922"
-        private const val PREF_COPY_TEXT_VIBRATE = "vibrate_when_copy_text_success"
         // Wait a mount of time. If no 1922 number then trigger first QRCode
         private const val MSG_FORCE_TRIGGER = 1
         // Time interval to trigger next QRCode

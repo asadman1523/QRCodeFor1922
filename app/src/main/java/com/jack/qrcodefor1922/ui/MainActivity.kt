@@ -224,11 +224,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.darkness -> {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://github.com/asadman1523/QRCodeFor1922/releases/")
-                startActivity(intent)
-            }
             R.id.settings -> {
                 if (supportFragmentManager.findFragmentByTag(FRAGMENT_TAG_SETTINGS) == null) {
                     supportFragmentManager
