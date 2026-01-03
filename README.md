@@ -1,17 +1,18 @@
-# QRCodeFor1922 自製實聯制掃描器 For Android
+# QRCodeScanner For Android
 
+一個簡單、快速的 Android QR 碼掃描器。
 
-官方版本請至[Play商店][1]下載
+## 說明
+本專案已轉型為通用型 QR 碼掃描器。
 
-Android 6.0 以前請下載[此版][2]
+**注意：原有的 1922 實聯制相關功能已經移動至分支 `2025_old`。**
 
-暗黑版本(自動傳送簡訊)請至 [Release][3] 下載
+## 下載
+官方版本請至 [Play 商店][1] 下載。
 
-## Library
-此APP的QRCode解碼功能使用 [zxing-android-embedded][4] 的開放原始碼項目
-
-5.0以後改用 [Google ML Kit][6]
-
+## 使用技術 (Library)
+- QR 碼掃描與辨識使用 [Google ML Kit][6]。
+- 早期版本曾使用 [zxing-android-embedded][4]。
 
 ## License
 
@@ -31,10 +32,7 @@ Licensed under the [Apache License 2.0][5]
 	See the License for the specific language governing permissions and
 	limitations under the License.
 
-
 [1]: https://play.google.com/store/apps/details?id=com.jack.qrcodefor1922
-[2]: https://github.com/asadman1523/QRCodeFor1922/releases/tag/3.1_old
-[3]: https://github.com/asadman1523/QRCodeFor1922/releases
 [4]: https://github.com/journeyapps/zxing-android-embedded
 [5]: http://www.apache.org/licenses/LICENSE-2.0
 [6]: https://developers.google.com/ml-kit/vision/barcode-scanning
