@@ -25,8 +25,8 @@ android {
         applicationId "com.jack.qrcodefor1922"
         minSdk 21
         targetSdk 36
-        versionCode 47
-        versionName "6.0"
+        versionCode 48
+        versionName "6.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

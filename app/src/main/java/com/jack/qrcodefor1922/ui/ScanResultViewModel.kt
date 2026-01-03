@@ -11,9 +11,13 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class ScanResultViewModel: ViewModel() {
-    val _resultData: MutableLiveData<List<ScanResult>> = MutableLiveData()
+    private val _resultData: MutableLiveData<List<ScanResult>> = MutableLiveData()
     val resultData: LiveData<List<ScanResult>>
         get() = _resultData
+
+    private val _isUnlocked: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isUnlocked: LiveData<Boolean>
+        get() = _isUnlocked
 
     fun getAllResult(applicationContext: Context) {
         viewModelScope.launch {
@@ -22,4 +26,7 @@ class ScanResultViewModel: ViewModel() {
         }
     }
 
+    fun unlockHistory() {
+        _isUnlocked.value = true
+    }
 }

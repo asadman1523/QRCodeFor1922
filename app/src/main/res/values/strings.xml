@@ -2,6 +2,9 @@
     <string name="app_name">QRCodeScanner</string>
     <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
     <string name="admob_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_unlock_history_id">ca-app-pub-3940256099942544/5224354917</string>
+    <string name="view_all_with_ad">點此解鎖全部歷史(觀看廣告)</string>
+    <string name="history_unlocked">已解鎖全部歷史</string>
     <string name="copy_already">Copied text: %s</string>
     <string name="claim_title">"Disclaimer"</string>
     <string name="claim_mes">"The developer is not responsible for any loss caused by using this App. \nAgree please click agree."</string>

@@ -27,6 +27,7 @@ jobs:
         run: |
           sed -i 's|ca-app-pub-3940256099942544~3347511713|${{ secrets.ADMOB_APP_ID }}|g' app/src/main/res/values/strings.xml
           sed -i 's|ca-app-pub-3940256099942544/6300978111|${{ secrets.ADMOB_UNIT_ID }}|g' app/src/main/res/values/strings.xml
+          sed -i 's|ca-app-pub-3940256099942544/5224354917|${{ secrets.ADMOB_UNLOCK_HISTORY_ID }}|g' app/src/main/res/values/strings.xml
 
       - name: Decode Keystore
         run: |
