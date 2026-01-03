@@ -12,7 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
-import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.jack.qrcodefor1922.Utils.getDatabaseDao
 import com.jack.qrcodefor1922.ui.MainActivity.Companion.PREFKEY
 import com.jack.qrcodefor1922.ui.database.AppDatabase
@@ -109,8 +109,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun triggerBarcode(barcode: Barcode) {
-        if (barcode.rawValue == null || mHasTrigger ||
-            TextUtils.equals(mLastTriggerText, barcode.rawValue)
+        val rawValue = barcode.rawValue
+        if (rawValue == null || mHasTrigger ||
+            TextUtils.equals(mLastTriggerText, rawValue)
             || bSettingsShow || bRedirectDialogShowing
         ) {
             return
@@ -141,7 +142,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             if (mPref.getBoolean(PREF_AUTO_OPEN_SCHEMA, false)) {
                 synchronized(obj) {
                     val intent = Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse(barcode.rawValue)
+                        data = Uri.parse(rawValue)
                     }
                     if (getApplication<Application>().packageManager?.queryIntentActivities(
                             intent,
@@ -153,20 +154,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         _showDetectOtherDialog.value = null
                         bRedirectDialogShowing = true
                     } else {
-                        copyToClipboard(barcode.rawValue)
+                        copyToClipboard(rawValue)
                     }
                 }
-                saveResultToDb(barcode.rawValue, TYPE.REDIRECT)
+                saveResultToDb(rawValue, TYPE.REDIRECT)
             } else {
-                copyToClipboard(barcode.rawValue)
-                saveResultToDb(barcode.rawValue, TYPE.TEXT)
+                copyToClipboard(rawValue)
+                saveResultToDb(rawValue, TYPE.TEXT)
             }
         }
         mHandler.postDelayed(Runnable {
             mLastTriggerText = ""
             mHasTrigger = false
         }, 1500)
-        mLastTriggerText = barcode.rawValue
+        mLastTriggerText = rawValue
         mHasTrigger = true
     }
 
