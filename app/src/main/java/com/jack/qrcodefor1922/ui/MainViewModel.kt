@@ -100,26 +100,39 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
 
-        // Filter 1922 number
         if (barcode.valueType == Barcode.TYPE_SMS) {
             if (mPref.getBoolean(PREF_VIBRATE_WHEN_SUCCESS, true)) {
                 _vibrate.value = true
             }
-            if (TextUtils.equals(barcode.sms?.phoneNumber, VAILD_NUMBER)) {
-                val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
-                    type = "text/plain"
-                    data = Uri.parse("smsto:${barcode.sms?.phoneNumber}")
-                    putExtra("sms_body", "${barcode.sms?.message}")
-                }
-                _startActivity.value = sendIntent
-                if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
-                    _finishActivity.value = true
-                }
+            val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
+                type = "text/plain"
+                data = Uri.parse("smsto:${barcode.sms?.phoneNumber}")
+                putExtra("sms_body", "${barcode.sms?.message}")
+            }
+            _startActivity.value = sendIntent
+            if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
+                _finishActivity.value = true
             }
             saveResultToDb(barcode.sms?.message, TYPE.SMS_1922)
         } else {
-            copyToClipboard(rawValue)
-            saveResultToDb(rawValue, TYPE.TEXT)
+            synchronized(obj) {
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = rawValue.toUri()
+                }
+                if (getApplication<Application>().packageManager?.queryIntentActivities(
+                        intent,
+                        0
+                    ) != null
+                ) {
+                    mTempIntent = intent
+                    _showDetectOtherDialog.value = barcode
+                    _showDetectOtherDialog.value = null
+                    bRedirectDialogShowing = true
+                } else {
+                    copyToClipboard(rawValue)
+                }
+            }
+            saveResultToDb(rawValue, TYPE.REDIRECT)
         }
         mHandler.postDelayed(Runnable {
             mLastTriggerText = ""
@@ -135,21 +148,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 mHandler.sendEmptyMessageDelayed(MSG_FORCE_TRIGGER, 700)
                 mHandler.sendEmptyMessageDelayed(MSG_COOLING_TIME, 4000)
             }
-            if (!mForeTrigger.get()) {
-                // Find 1922 number in list
-                for (barcode in barcodes) {
-                    if (barcode.valueType == Barcode.TYPE_SMS
-                        && TextUtils.equals(barcode.sms?.phoneNumber, VAILD_NUMBER)
-                    ) {
-                        mHandler.removeMessages(MSG_FORCE_TRIGGER)
-                        mHandler.removeMessages(MSG_COOLING_TIME)
-                        triggerBarcode(barcode)
-                    }
-                }
-            } else {
-                // Trigger first QRCode directly
-                triggerBarcode(barcodes.first())
-            }
+            // Trigger first QRCode directly
+            triggerBarcode(barcodes.first())
         }
     }
 
@@ -223,7 +223,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         private const val AGREEMENT = "agreement"
         private const val FEATURE_HISTORY = "feature_history"
-        private const val VAILD_NUMBER = "1922"
         private const val PREF_CLOSE_APP_AFTER_SCAN = "close_after_scan"
         private const val PREF_VIBRATE_WHEN_SUCCESS = "vibrate_when_success"
         private const val PREF_AUTO_COPY_TEXT = "auto_copy_non_1922"
