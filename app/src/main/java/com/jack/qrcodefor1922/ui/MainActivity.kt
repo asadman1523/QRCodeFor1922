@@ -73,11 +73,10 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.copyAlready.observe(this) {
             if (it.isNotEmpty()) {
-                Toast.makeText(
-                    this,
-                    String.format(getString(R.string.copy_already), it),
-                    Toast.LENGTH_SHORT
-                ).show()
+                AlertDialog.Builder(this)
+                    .setMessage(String.format(getString(R.string.copy_already), it))
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
             }
         }
         viewModel.startActivity.observe(this) {
