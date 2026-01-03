@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace 'com.jack.qrcodefor1922'
-    compileSdk 35
+    compileSdkVersion 36
 
     signingConfigs {
         release {
@@ -24,7 +24,7 @@ android {
     defaultConfig {
         applicationId "com.jack.qrcodefor1922"
         minSdk 21
-        targetSdk 35
+        targetSdk 36
         versionCode 47
         versionName "6.0"
 
