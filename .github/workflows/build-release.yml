@@ -28,8 +28,17 @@ jobs:
           sed -i 's|ca-app-pub-3940256099942544~3347511713|${{ secrets.ADMOB_APP_ID }}|g' app/src/main/res/values/strings.xml
           sed -i 's|ca-app-pub-3940256099942544/6300978111|${{ secrets.ADMOB_UNIT_ID }}|g' app/src/main/res/values/strings.xml
 
-      - name: Build Release APK
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.JKS_BASE64 }}" | base64 --decode > app/release.jks
+
+      - name: Build Signed Release APK
         run: ./gradlew assembleRelease
+        env:
+          SIGNING_STORE_FILE: release.jks
+          SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload APK to Release
         uses: softprops/action-gh-release@v2
