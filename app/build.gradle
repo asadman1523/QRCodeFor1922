@@ -57,6 +57,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     implementation 'androidx.fragment:fragment-ktx:1.8.5'
+    implementation 'com.google.guava:guava:31.1-android'
+    implementation 'com.google.android.gms:play-services-ads:23.6.0'
     implementation 'com.google.mlkit:barcode-scanning:17.3.0'
     def camerax_version = '1.4.1'
     // CameraX core library using camera2 implementation

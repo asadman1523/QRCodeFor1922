@@ -22,19 +22,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import androidx.core.net.toUri
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var mLastTriggerText: String = ""
     private var mHasTrigger = false
     private var bAgreement = false
     private var bRedirectDialogShowing = false
-    private var mAccompanyNum = 0
     private var bSettingsShow = false
     private var mTempIntent: Intent? = null
 
     private val _showAgreement = MutableLiveData<Boolean?>()
     private val _startCamera = MutableLiveData<Boolean?>()
-    private val _personNum = MutableLiveData<String>()
     private val _copyAlready = MutableLiveData<String>()
     private val _startActivity = MutableLiveData<Intent?>()
     private val _finishActivity = MutableLiveData<Boolean?>()
@@ -43,7 +42,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _vibrate = MutableLiveData<Boolean?>()
     val showAgreement:LiveData<Boolean?> = _showAgreement
     val startCamera:LiveData<Boolean?> = _startCamera
-    val personNum:LiveData<String> = _personNum
     val copyAlready:LiveData<String> = _copyAlready
     val startActivity:LiveData<Intent?> = _startActivity
     val finishActivity:LiveData<Boolean?> = _finishActivity
@@ -65,10 +63,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         mBgThread = HandlerThread("timer")
         mBgThread.start()
         mHandler = BgHandler(mBgThread.looper)
-    }
-
-    fun onSeekBarChange(progress: Int) {
-        mAccompanyNum = progress
     }
 
     fun ready() {
@@ -97,17 +91,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         ready()
     }
 
-    fun userEnterAccompanyNum(num: String) {
-        if (num.isNotEmpty()) {
-            var num = num.toInt()
-            if (num > 10) num = 10
-            mAccompanyNum = num
-        } else {
-            mAccompanyNum = 0
-        }
-        _personNum.value = mAccompanyNum.toString()
-    }
-
     private fun triggerBarcode(barcode: Barcode) {
         val rawValue = barcode.rawValue
         if (rawValue == null || mHasTrigger ||
@@ -126,11 +109,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                     type = "text/plain"
                     data = Uri.parse("smsto:${barcode.sms?.phoneNumber}")
-                    var appendFamilyStr = ""
-                    if (mAccompanyNum != 0) {
-                        appendFamilyStr = "+$mAccompanyNum"
-                    }
-                    putExtra("sms_body", "${barcode.sms?.message} $appendFamilyStr")
+                    putExtra("sms_body", "${barcode.sms?.message}")
                 }
                 _startActivity.value = sendIntent
                 if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
@@ -139,29 +118,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
             saveResultToDb(barcode.sms?.message, TYPE.SMS_1922)
         } else {
-            if (mPref.getBoolean(PREF_AUTO_OPEN_SCHEMA, false)) {
-                synchronized(obj) {
-                    val intent = Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse(rawValue)
-                    }
-                    if (getApplication<Application>().packageManager?.queryIntentActivities(
-                            intent,
-                            0
-                        ) != null
-                    ) {
-                        mTempIntent = intent
-                        _showDetectOtherDialog.value = barcode
-                        _showDetectOtherDialog.value = null
-                        bRedirectDialogShowing = true
-                    } else {
-                        copyToClipboard(rawValue)
-                    }
-                }
-                saveResultToDb(rawValue, TYPE.REDIRECT)
-            } else {
-                copyToClipboard(rawValue)
-                saveResultToDb(rawValue, TYPE.TEXT)
-            }
+            copyToClipboard(rawValue)
+            saveResultToDb(rawValue, TYPE.TEXT)
         }
         mHandler.postDelayed(Runnable {
             mLastTriggerText = ""
@@ -268,7 +226,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         private const val VAILD_NUMBER = "1922"
         private const val PREF_CLOSE_APP_AFTER_SCAN = "close_after_scan"
         private const val PREF_VIBRATE_WHEN_SUCCESS = "vibrate_when_success"
-        private const val PREF_AUTO_OPEN_SCHEMA = "auto_open_identify_schema"
         private const val PREF_AUTO_COPY_TEXT = "auto_copy_non_1922"
         private const val PREF_COPY_TEXT_VIBRATE = "vibrate_when_copy_text_success"
         // Wait a mount of time. If no 1922 number then trigger first QRCode

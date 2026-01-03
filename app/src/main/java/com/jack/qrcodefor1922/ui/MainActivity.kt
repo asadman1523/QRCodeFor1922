@@ -2,7 +2,6 @@ package com.jack.qrcodefor1922.ui
 
 import android.Manifest
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,16 +9,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.text.InputFilter
-import android.text.InputType
 import android.util.Log
 import android.util.Size
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -30,7 +23,8 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.jack.qrcodefor1922.QRCodeAnalyzer
 import com.jack.qrcodefor1922.R
@@ -55,8 +49,11 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        MobileAds.initialize(this) {}
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.loadAd(adRequest)
+
         cameraExecutor = Executors.newSingleThreadExecutor()
-        initAccompanyView()
         viewModel.showAgreement.observe(this) {
             it?.let {
                 if (it) {
@@ -73,9 +70,6 @@ class MainActivity : AppCompatActivity() {
             if (it == true) {
                 startCamera()
             }
-        }
-        viewModel.personNum.observe(this) {
-            binding.withFamilyView.text = it
         }
         viewModel.copyAlready.observe(this) {
             if (it.isNotEmpty()) {
@@ -102,36 +96,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.finishActivity.observe(this) {
             if (it == true) {
                 finish()
-            }
-        }
-        viewModel.showDetectOtherDialog.observe(this) {
-            it?.let {
-                val dialog = MaterialAlertDialogBuilder(this@MainActivity)
-                dialog.setTitle(getString(R.string.detect_schema))
-                dialog.setMessage(
-                    String.format(
-                        getString(R.string.confirm_open_schema),
-                        it.rawValue
-                    )
-                )
-                dialog.setPositiveButton(
-                    getString(android.R.string.ok)
-                ) { dialog, which ->
-                    viewModel.resetRedirectDialog()
-                    viewModel.activeIntent()
-                }
-                dialog.setNeutralButton(
-                    getString(R.string.copy_to_clipboard)
-                ) { dialog, which ->
-                    viewModel.copyToClipboard(it.rawValue ?: "")
-                }
-                dialog.setNegativeButton(
-                    android.R.string.cancel
-                ) { _, _ -> viewModel.resetRedirectDialog() }
-                dialog.setOnCancelListener {
-                    viewModel.resetRedirectDialog()
-                }
-                dialog.show()
             }
         }
         viewModel.showHistoryPrompt.observe(this) {
@@ -178,57 +142,6 @@ class MainActivity : AppCompatActivity() {
             )
         }
         viewModel.resetStartCamera()
-    }
-
-    private fun initAccompanyView() {
-        binding.withFamilyView.setOnClickListener {
-            showEnterNumberDialog()
-        }
-        binding.plusSign.setOnClickListener {
-            showEnterNumberDialog()
-        }
-        binding.withFamilyBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.onSeekBarChange(progress)
-                binding.withFamilyView.text = progress.toString()
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            }
-
-        })
-    }
-
-    /**
-     * Let user enter accompany number
-     */
-    private fun showEnterNumberDialog() {
-        val editText = EditText(this)
-        editText.inputType = InputType.TYPE_CLASS_NUMBER
-        // Limit input length
-        val filter = InputFilter.LengthFilter(2)
-        editText.filters = arrayOf(filter)
-
-        AlertDialog.Builder(this)
-            .setCancelable(false)
-            .setTitle(getString(R.string.enter_accompany_num))
-            .setView(editText)
-            .setPositiveButton(getString(R.string.dialog_confirm)) { _, _ ->
-                editText.let {
-                    viewModel.userEnterAccompanyNum(it.text.toString())
-                }
-            }.show()
-
-        // Keyboard not showing when dialog show. Trigger manually.
-        editText.postDelayed({
-            editText.requestFocus()
-            val input = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            input.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
-        }, 300)
-
     }
 
     private fun startCameraLock() {

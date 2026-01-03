@@ -10,11 +10,6 @@
         android:defaultValue="false"
         app:title="@string/closeWhenDetect"/>
 
-    <SwitchPreferenceCompat
-        android:key="auto_open_identify_schema"
-        android:defaultValue="false"
-        app:title="@string/try_open_other_schema"/>
-
     <PreferenceCategory
         android:title="@string/settings_1922"/>
 
