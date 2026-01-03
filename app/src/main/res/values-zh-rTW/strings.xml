@@ -10,9 +10,14 @@
     <string name="settings">設定</string>
     <string name="settings_normal">一般設定</string>
     <string name="settings_copy_text">複製文字</string>
+    <string name="detect_schema">掃描結果</string>
+    <string name="confirm_open_schema">是否開啟此內容?\n%s</string>
     <string name="copy_to_clipboard">複製到剪貼簿</string>
     <string name="auto_copy_non_1922">自動複製文字至剪貼簿</string>
     <string name="dialog_confirm">確定</string>
+    <string name="dialog_open">開啟</string>
+    <string name="dialog_share">分享</string>
+    <string name="text_copied_hint">\n(已複製到剪貼簿)</string>
     <string name="hint_permission_title">錯誤</string>
     <string name="hint_permission_mes">你必須同意所有權限才能使用此app</string>
     <string name="nothing_happen">跳轉失敗...</string>

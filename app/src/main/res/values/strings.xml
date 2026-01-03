@@ -10,9 +10,14 @@
     <string name="settings">Settings</string>
     <string name="settings_normal">Common Settings</string>
     <string name="settings_copy_text">Copy Text</string>
+    <string name="detect_schema">Scan Result</string>
+    <string name="confirm_open_schema">Open this content?\n%s</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="auto_copy_non_1922">Auto copy text to clipboard</string>
     <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_open">Open</string>
+    <string name="dialog_share">Share</string>
+    <string name="text_copied_hint">\n(Copied to clipboard)</string>
     <string name="hint_permission_title">Error</string>
     <string name="hint_permission_mes">You must allow all permissions to use the app.</string>
     <string name="nothing_happen">Redirect fail</string>

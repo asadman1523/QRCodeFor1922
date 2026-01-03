@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.jack.qrcodefor1922.QRCodeAnalyzer
 import com.jack.qrcodefor1922.R
@@ -71,25 +72,65 @@ class MainActivity : AppCompatActivity() {
                 startCamera()
             }
         }
-        viewModel.copyAlready.observe(this) {
-            if (it.isNotEmpty()) {
-                AlertDialog.Builder(this)
-                    .setMessage(String.format(getString(R.string.copy_already), it))
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show()
-            }
-        }
-        viewModel.startActivity.observe(this) {
-            it?.let {
-                try {
-                    startActivity(it)
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.nothing_happen),
-                        Toast.LENGTH_SHORT
-                    ).show()
+        viewModel.showScanResultDialog.observe(this) {
+            it?.let { info ->
+                val dialogBuilder = MaterialAlertDialogBuilder(this@MainActivity)
+                val rawValue = info.barcode.rawValue ?: ""
+
+                if (info.intent != null) {
+                    // Openable content (SMS, URL)
+                    dialogBuilder.setTitle(getString(R.string.detect_schema))
+                    dialogBuilder.setMessage(
+                        String.format(
+                            getString(R.string.confirm_open_schema),
+                            rawValue
+                        )
+                    )
+                    dialogBuilder.setPositiveButton(
+                        getString(R.string.dialog_open)
+                    ) { _, _ ->
+                        viewModel.resetRedirectDialog()
+                        try {
+                            startActivity(info.intent)
+                            if (info.shouldClose) {
+                                finish()
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.nothing_happen),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                } else {
+                    // Text
+                    dialogBuilder.setTitle(getString(R.string.detect_schema))
+                    var message = rawValue
+                    if (info.isCopied) {
+                        message += getString(R.string.text_copied_hint)
+                    }
+                    dialogBuilder.setMessage(message)
+                    dialogBuilder.setPositiveButton(
+                        getString(R.string.dialog_share)
+                    ) { _, _ ->
+                        viewModel.resetRedirectDialog()
+                        val shareIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, rawValue)
+                            type = "text/plain"
+                        }
+                        startActivity(Intent.createChooser(shareIntent, null))
+                    }
                 }
+
+                dialogBuilder.setNegativeButton(
+                    android.R.string.cancel
+                ) { _, _ -> viewModel.resetRedirectDialog() }
+                dialogBuilder.setOnCancelListener {
+                    viewModel.resetRedirectDialog()
+                }
+                dialogBuilder.show()
             }
         }
         viewModel.finishActivity.observe(this) {

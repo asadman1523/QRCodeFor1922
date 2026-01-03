@@ -37,7 +37,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _copyAlready = MutableLiveData<String>()
     private val _startActivity = MutableLiveData<Intent?>()
     private val _finishActivity = MutableLiveData<Boolean?>()
-    private val _showDetectOtherDialog = MutableLiveData<Barcode?>()
+    private val _showScanResultDialog = MutableLiveData<ScanResultInfo?>()
     private val _showHistoryPrompt = MutableLiveData<Boolean?>()
     private val _vibrate = MutableLiveData<Boolean?>()
     val showAgreement:LiveData<Boolean?> = _showAgreement
@@ -45,7 +45,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val copyAlready:LiveData<String> = _copyAlready
     val startActivity:LiveData<Intent?> = _startActivity
     val finishActivity:LiveData<Boolean?> = _finishActivity
-    val showDetectOtherDialog:LiveData<Barcode?> = _showDetectOtherDialog
+    val showScanResultDialog:LiveData<ScanResultInfo?> = _showScanResultDialog
     val showHistoryPrompt:LiveData<Boolean?> = _showHistoryPrompt
     val vibrate:LiveData<Boolean?>  = _vibrate
 
@@ -100,39 +100,46 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
 
-        // Filter 1922 number
+        _vibrate.value = true
+        var intent: Intent? = null
+        var isCopied = false
+        var shouldClose = false
+
+        // Check if it is a valid intent (URL, SMS, etc.)
         if (barcode.valueType == Barcode.TYPE_SMS) {
-            _vibrate.value = true
-            val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
+             intent = Intent(Intent.ACTION_SENDTO).apply {
                 type = "text/plain"
                 data = Uri.parse("smsto:${barcode.sms?.phoneNumber}")
                 putExtra("sms_body", "${barcode.sms?.message}")
             }
-            _startActivity.value = sendIntent
             if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
-                _finishActivity.value = true
+                shouldClose = true
             }
             saveResultToDb(barcode.sms?.message, TYPE.SMS_1922)
         } else {
-            synchronized(obj) {
-                val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = rawValue.toUri()
-                }
-                if (getApplication<Application>().packageManager?.queryIntentActivities(
-                        intent,
-                        0
-                    ) != null
-                ) {
-                    mTempIntent = intent
-                    _showDetectOtherDialog.value = barcode
-                    _showDetectOtherDialog.value = null
-                    bRedirectDialogShowing = true
-                } else {
-                    copyToClipboard(rawValue)
-                }
+            val possibleIntent = Intent(Intent.ACTION_VIEW).apply {
+                data = rawValue.toUri()
             }
-            saveResultToDb(rawValue, TYPE.REDIRECT)
+            if (getApplication<Application>().packageManager?.queryIntentActivities(
+                    possibleIntent,
+                    0
+                ) != null
+            ) {
+                intent = possibleIntent
+                saveResultToDb(rawValue, TYPE.REDIRECT)
+            } else {
+                // Pure text
+                if (mPref.getBoolean(PREF_AUTO_COPY_TEXT, true)) {
+                    copyToClipboard(rawValue)
+                    isCopied = true
+                }
+                saveResultToDb(rawValue, TYPE.TEXT)
+            }
         }
+
+        _showScanResultDialog.value = ScanResultInfo(barcode, isCopied, intent, shouldClose)
+        bRedirectDialogShowing = true
+
         mHandler.postDelayed(Runnable {
             mLastTriggerText = ""
             mHasTrigger = false
@@ -153,23 +160,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun copyToClipboard(text: String) {
-        if (mPref.getBoolean(PREF_AUTO_COPY_TEXT, true)) {
-            _vibrate.value = true
-            val clipboardManager =
-                getApplication<Application>().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip: ClipData = ClipData.newPlainText("simple text", text)
-            clipboardManager.setPrimaryClip(clip)
-            _copyAlready.value = text
-            _copyAlready.value = ""
-        }
+        val clipboardManager =
+            getApplication<Application>().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip: ClipData = ClipData.newPlainText("simple text", text)
+        clipboardManager.setPrimaryClip(clip)
     }
 
     fun isSettingsShowing(show: Boolean) {
         bSettingsShow = show
     }
 
-    fun activeIntent() {
-        _startActivity.value = mTempIntent
+    fun activeIntent(intent: Intent?) {
+        _startActivity.value = intent
         _startActivity.value = null
     }
 
@@ -230,3 +232,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         private val obj = Object()
     }
 }
+
+data class ScanResultInfo(
+    val barcode: Barcode,
+    val isCopied: Boolean,
+    val intent: Intent?,
+    val shouldClose: Boolean
+)
