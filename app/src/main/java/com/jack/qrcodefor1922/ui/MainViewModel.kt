@@ -121,7 +121,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             if (getApplication<Application>().packageManager?.queryIntentActivities(
                     possibleIntent,
                     0
-                ) != null
+                )?.isNotEmpty() == true
             ) {
                 intent = possibleIntent
                 saveResultToDb(rawValue, TYPE.REDIRECT)
