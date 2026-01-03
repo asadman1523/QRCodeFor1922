@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.showScanResultDialog.observe(this) {
             it?.let { info ->
                 val dialogBuilder = MaterialAlertDialogBuilder(this@MainActivity)
-                val rawValue = info.barcode.rawValue ?: ""
+                val rawValue = info.rawValue
 
                 if (info.intent != null) {
                     // Openable content (SMS, URL)
@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    if (info.barcode.valueType == Barcode.TYPE_SMS) {
+                    if (info.isSms) {
                         dialogBuilder.setMessage(
                             String.format(
                                 getString(R.string.dialog_redirect_sms_message),

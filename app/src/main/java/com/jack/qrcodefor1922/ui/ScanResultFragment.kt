@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +21,7 @@ class ScanResultFragment : Fragment() {
 
     private var columnCount = 1
     private val viewModel: ScanResultViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +38,9 @@ class ScanResultFragment : Fragment() {
                 else -> GridLayoutManager(context, columnCount)
             }
             viewModel.resultData.observe(viewLifecycleOwner) {
-                this.adapter = ScanResultRecyclerViewAdapter(it)
+                this.adapter = ScanResultRecyclerViewAdapter(it) { result ->
+                    mainViewModel.onHistoryItemClicked(result)
+                }
                 if (it.isEmpty()) {
                     visibility = View.GONE
                     emptyView.visibility = View.VISIBLE

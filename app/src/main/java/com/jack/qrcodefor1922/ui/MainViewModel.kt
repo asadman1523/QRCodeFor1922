@@ -113,16 +113,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             if (mPref.getBoolean(PREF_CLOSE_APP_AFTER_SCAN, false)) {
                 shouldClose = true
             }
-            saveResultToDb(barcode.sms?.message, TYPE.SMS_1922)
+            saveResultToDb(rawValue, TYPE.SMS_1922)
         } else {
             val possibleIntent = Intent(Intent.ACTION_VIEW).apply {
                 data = rawValue.toUri()
             }
-            val activities = getApplication<Application>().packageManager?.queryIntentActivities(
-                possibleIntent,
-                0
-            )
-            if (!activities.isNullOrEmpty()) {
+            if (getApplication<Application>().packageManager?.queryIntentActivities(
+                    possibleIntent,
+                    0
+                ) != null
+            ) {
                 intent = possibleIntent
                 saveResultToDb(rawValue, TYPE.REDIRECT)
             } else {
@@ -135,7 +135,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        _showScanResultDialog.value = ScanResultInfo(barcode, isCopied, intent, shouldClose)
+        _showScanResultDialog.value = ScanResultInfo(rawValue, barcode.valueType == Barcode.TYPE_SMS, isCopied, intent, shouldClose)
         bRedirectDialogShowing = true
 
         resetTriggerJob?.cancel()
@@ -146,6 +146,32 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
         mLastTriggerText = rawValue
         mHasTrigger = true
+    }
+
+    fun onHistoryItemClicked(result: ScanResult) {
+        val rawValue = result.content
+        var intent: Intent? = null
+        var isSms = false
+
+        if (result.type == TYPE.SMS_1922) {
+            isSms = true
+            // Try to parse raw value as URI
+            if (rawValue.startsWith("smsto:") || rawValue.startsWith("sms:")) {
+                intent = Intent(Intent.ACTION_SENDTO, Uri.parse(rawValue))
+            } else {
+                // Legacy 1922 format (only body stored)
+                intent = Intent(Intent.ACTION_SENDTO).apply {
+                    type = "text/plain"
+                    data = Uri.parse("smsto:1922")
+                    putExtra("sms_body", rawValue)
+                }
+            }
+        } else if (result.type == TYPE.REDIRECT) {
+            intent = Intent(Intent.ACTION_VIEW, Uri.parse(rawValue))
+        }
+        // For TEXT, intent is null
+
+        _showScanResultDialog.value = ScanResultInfo(rawValue, isSms, false, intent, false)
     }
 
     fun newBarcodes(barcodes: List<Barcode>) {
@@ -210,37 +236,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private class BgHandler(looper: Looper) : Handler(looper) {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            when (msg.what) {
-                MSG_FORCE_TRIGGER -> {
-                    mForeTrigger.set(true)
-                }
-                MSG_COOLING_TIME -> {
-                    mForeTrigger.set(false)
-                }
-            }
-        }
-    }
-
-
     companion object {
         private const val AGREEMENT = "agreement"
         private const val FEATURE_HISTORY = "feature_history"
         private const val PREF_CLOSE_APP_AFTER_SCAN = "close_after_scan"
         private const val PREF_AUTO_COPY_TEXT = "auto_copy_non_1922"
-        // Wait a mount of time. If no 1922 number then trigger first QRCode
-        private const val MSG_FORCE_TRIGGER = 1
-        // Time interval to trigger next QRCode
-        private const val MSG_COOLING_TIME = 2
         private val mForeTrigger = AtomicBoolean(false)
         private val obj = Object()
     }
 }
 
 data class ScanResultInfo(
-    val barcode: Barcode,
+    val rawValue: String,
+    val isSms: Boolean,
     val isCopied: Boolean,
     val intent: Intent?,
     val shouldClose: Boolean

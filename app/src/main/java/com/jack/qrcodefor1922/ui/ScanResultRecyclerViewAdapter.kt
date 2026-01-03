@@ -19,7 +19,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ScanResultRecyclerViewAdapter(
-    private val results: List<ScanResult>
+    private val results: List<ScanResult>,
+    private val listener: (ScanResult) -> Unit
 ) : RecyclerView.Adapter<ScanResultRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -44,6 +45,9 @@ class ScanResultRecyclerViewAdapter(
         holder.timeStampView.text =
             SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.TAIWAN).format(item.timestamp)
         holder.contentView.text = item.content
+        holder.itemView.setOnClickListener {
+            listener(item)
+        }
     }
 
     override fun getItemCount(): Int = results.size
