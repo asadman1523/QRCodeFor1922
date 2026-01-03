@@ -26,19 +26,26 @@ class ScanResultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
+        val list = view.findViewById<RecyclerView>(R.id.list)
+        val emptyView = view.findViewById<View>(R.id.empty_view)
 
         // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                viewModel.resultData.observe(viewLifecycleOwner) {
-                    this.adapter = ScanResultRecyclerViewAdapter(it)
-                }
-                addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        with(list) {
+            layoutManager = when {
+                columnCount <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, columnCount)
             }
+            viewModel.resultData.observe(viewLifecycleOwner) {
+                this.adapter = ScanResultRecyclerViewAdapter(it)
+                if (it.isEmpty()) {
+                    visibility = View.GONE
+                    emptyView.visibility = View.VISIBLE
+                } else {
+                    visibility = View.VISIBLE
+                    emptyView.visibility = View.GONE
+                }
+            }
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
         return view

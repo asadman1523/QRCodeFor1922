@@ -19,4 +19,5 @@
     <string name="setting_history">History</string>
     <string name="new_feature">New feature!</string>
     <string name="history_feature_mes">"You can check scan history now from menu at top right corner!"</string>
+    <string name="history_empty">History is empty</string>
 </resources>
