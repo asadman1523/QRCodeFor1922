@@ -16,6 +16,8 @@
     <string name="auto_copy_non_1922">Auto copy text to clipboard</string>
     <string name="dialog_confirm">Confirm</string>
     <string name="dialog_open">Open</string>
+    <string name="dialog_redirect">Redirect</string>
+    <string name="dialog_redirect_sms_message">Redirecting to SMS app\n%s</string>
     <string name="dialog_share">Share</string>
     <string name="text_copied_hint">\n(Copied to clipboard)</string>
     <string name="hint_permission_title">Error</string>

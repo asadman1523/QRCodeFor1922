@@ -2,6 +2,7 @@ package com.jack.qrcodefor1922.ui
 
 import android.Manifest
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -80,15 +81,8 @@ class MainActivity : AppCompatActivity() {
                 if (info.intent != null) {
                     // Openable content (SMS, URL)
                     dialogBuilder.setTitle(getString(R.string.detect_schema))
-                    dialogBuilder.setMessage(
-                        String.format(
-                            getString(R.string.confirm_open_schema),
-                            rawValue
-                        )
-                    )
-                    dialogBuilder.setPositiveButton(
-                        getString(R.string.dialog_open)
-                    ) { _, _ ->
+
+                    val positiveListener = DialogInterface.OnClickListener { _, _ ->
                         viewModel.resetRedirectDialog()
                         try {
                             startActivity(info.intent)
@@ -102,6 +96,30 @@ class MainActivity : AppCompatActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+                    }
+
+                    if (info.barcode.valueType == Barcode.TYPE_SMS) {
+                        dialogBuilder.setMessage(
+                            String.format(
+                                getString(R.string.dialog_redirect_sms_message),
+                                rawValue
+                            )
+                        )
+                        dialogBuilder.setPositiveButton(
+                            getString(R.string.dialog_redirect),
+                            positiveListener
+                        )
+                    } else {
+                        dialogBuilder.setMessage(
+                            String.format(
+                                getString(R.string.confirm_open_schema),
+                                rawValue
+                            )
+                        )
+                        dialogBuilder.setPositiveButton(
+                            getString(R.string.dialog_open),
+                            positiveListener
+                        )
                     }
                 } else {
                     // Text

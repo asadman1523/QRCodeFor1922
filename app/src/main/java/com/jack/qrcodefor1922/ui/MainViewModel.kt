@@ -18,6 +18,7 @@ import com.jack.qrcodefor1922.ui.MainActivity.Companion.PREFKEY
 import com.jack.qrcodefor1922.ui.database.AppDatabase
 import com.jack.qrcodefor1922.ui.database.ScanResult
 import com.jack.qrcodefor1922.ui.database.TYPE
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -31,6 +32,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var bRedirectDialogShowing = false
     private var bSettingsShow = false
     private var mTempIntent: Intent? = null
+
+    private var resetTriggerJob: Job? = null
+    private var forceTriggerJob: Job? = null
+    private var coolingTimeJob: Job? = null
 
     private val _showAgreement = MutableLiveData<Boolean?>()
     private val _startCamera = MutableLiveData<Boolean?>()
@@ -50,19 +55,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val vibrate:LiveData<Boolean?>  = _vibrate
 
     private lateinit var mPref: SharedPreferences
-    private var mBgThread: HandlerThread
-    private var mHandler: BgHandler
 
     init {
         try {
             mPref = application.getSharedPreferences(PREFKEY, AppCompatActivity.MODE_PRIVATE)
         } catch (e: Exception) {
         }
-
-        // Using another thread to delay trigger QRCode
-        mBgThread = HandlerThread("timer")
-        mBgThread.start()
-        mHandler = BgHandler(mBgThread.looper)
     }
 
     fun ready() {
@@ -120,11 +118,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val possibleIntent = Intent(Intent.ACTION_VIEW).apply {
                 data = rawValue.toUri()
             }
-            if (getApplication<Application>().packageManager?.queryIntentActivities(
-                    possibleIntent,
-                    0
-                ) != null
-            ) {
+            val activities = getApplication<Application>().packageManager?.queryIntentActivities(
+                possibleIntent,
+                0
+            )
+            if (!activities.isNullOrEmpty()) {
                 intent = possibleIntent
                 saveResultToDb(rawValue, TYPE.REDIRECT)
             } else {
@@ -140,19 +138,27 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _showScanResultDialog.value = ScanResultInfo(barcode, isCopied, intent, shouldClose)
         bRedirectDialogShowing = true
 
-        mHandler.postDelayed(Runnable {
+        resetTriggerJob?.cancel()
+        resetTriggerJob = viewModelScope.launch {
+            delay(1500)
             mLastTriggerText = ""
             mHasTrigger = false
-        }, 1500)
+        }
         mLastTriggerText = rawValue
         mHasTrigger = true
     }
 
     fun newBarcodes(barcodes: List<Barcode>) {
         if (barcodes.isNotEmpty()) {
-            if (!mHandler.hasMessages(MSG_FORCE_TRIGGER)) {
-                mHandler.sendEmptyMessageDelayed(MSG_FORCE_TRIGGER, 700)
-                mHandler.sendEmptyMessageDelayed(MSG_COOLING_TIME, 4000)
+            if (forceTriggerJob?.isActive != true) {
+                forceTriggerJob = viewModelScope.launch {
+                    delay(700)
+                    mForeTrigger.set(true)
+                }
+                coolingTimeJob = viewModelScope.launch {
+                    delay(4000)
+                    mForeTrigger.set(false)
+                }
             }
             // Trigger first QRCode directly
             triggerBarcode(barcodes.first())

@@ -16,6 +16,8 @@
     <string name="auto_copy_non_1922">自動複製文字至剪貼簿</string>
     <string name="dialog_confirm">確定</string>
     <string name="dialog_open">開啟</string>
+    <string name="dialog_redirect">跳轉</string>
+    <string name="dialog_redirect_sms_message">即將跳轉到簡訊\n%s</string>
     <string name="dialog_share">分享</string>
     <string name="text_copied_hint">\n(已複製到剪貼簿)</string>
     <string name="hint_permission_title">錯誤</string>
