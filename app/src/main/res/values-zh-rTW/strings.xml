@@ -23,7 +23,7 @@
     <string name="hint_permission_mes">你必須同意所有權限才能使用此app</string>
     <string name="nothing_happen">跳轉失敗...</string>
     <string name="setting_history">歷史紀錄</string>
-    <string name="new_feature">新功能!</string>
-    <string name="history_feature_mes">"可以從右上角查看掃描過的歷史紀錄囉!"</string>
+    <string name="new_feature">版本紀錄!</string>
+    <string name="history_feature_mes">"我們轉為通用型QR碼APP囉!\n\n1.更新至新版MLkit\n2.更新JAVA版本\n3.升級函式庫\n4.修正淺色模式\n5.改善效能"</string>
     <string name="history_empty">歷史紀錄是空的</string>
 </resources>

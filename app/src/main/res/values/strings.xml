@@ -28,7 +28,7 @@
     <string name="hint_permission_mes">You must allow all permissions to use the app.</string>
     <string name="nothing_happen">Redirect fail</string>
     <string name="setting_history">History</string>
-    <string name="new_feature">New feature!</string>
-    <string name="history_feature_mes">"You can check scan history now from menu at top right corner!"</string>
+    <string name="new_feature">Release Notes!</string>
+    <string name="history_feature_mes">"We\'ve transformed into a universal QR code app!\n\n1. Updated to new MLkit\n2. Updated Java version\n3. Upgraded libraries\n4. Fixed light mode\n5. Improved performance"</string>
     <string name="history_empty">History is empty</string>
 </resources>
