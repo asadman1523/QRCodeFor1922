@@ -16,7 +16,19 @@ The app does use third party services that may collect information used to ident
 
 Link to privacy policy of third party service providers used by the app
 
+*   [Google AdMob](https://support.google.com/admob/answer/6128543)
 *   [zxing-android-embedded](https://github.com/journeyapps/zxing-android-embedded)
+
+**Advertising**
+
+This app uses Google AdMob to display advertisements. AdMob may collect and use data to provide personalized ads. This data may include:
+
+*   Device information (device model, operating system version)
+*   Advertising ID
+*   IP address
+*   App usage data
+
+You can opt out of personalized advertising by adjusting your device settings or visiting [Google's Ads Settings](https://www.google.com/settings/ads).
 
 
 **Children’s Privacy**
@@ -27,7 +39,7 @@ These Services do not address anyone under the age of 13. I do not knowingly col
 
 I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
 
-This policy is effective as of 2021-05-26
+This policy is effective as of 2026-01-08
 
 **Contact Us**
 
