@@ -1,3 +1,5 @@
+
+
 # QRCodeScanner For Android
 
 一個簡單、快速的 Android QR 碼掃描器。
@@ -13,6 +15,9 @@
 
 ## 下載
 官方版本請至 [Play 商店][1] 下載。
+
+## 隱私政策
+本應用程式的隱私權政策請參閱 [PrivacyPolicy.md][2]。
 
 ## 使用技術 (Library)
 - QR 碼掃描與辨識使用 [Google ML Kit][6]。
@@ -37,6 +42,7 @@ Licensed under the [Apache License 2.0][5]
 	limitations under the License.
 
 [1]: https://play.google.com/store/apps/details?id=com.jack.qrcodefor1922
+[2]: PrivacyPolicy.md
 [4]: https://github.com/journeyapps/zxing-android-embedded
 [5]: http://www.apache.org/licenses/LICENSE-2.0
 [6]: https://developers.google.com/ml-kit/vision/barcode-scanning
